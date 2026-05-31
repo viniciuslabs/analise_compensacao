@@ -169,28 +169,28 @@ input[type=range].proj-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
 /* ── INSIGHT CARD ── */
 .insight-card{
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
-  padding:14px 18px;margin-bottom:20px;
+  padding:14px 18px 14px 20px;margin-bottom:20px;
   display:flex;align-items:flex-start;gap:12px;
   box-shadow:var(--shadow);
   position:relative;overflow:hidden;
 }
-.insight-card::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  border-radius:3px 0 0 3px;
+.insight-bar{
+  position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;
+  transition:background .3s;
 }
-.insight-card.blue::before{background:var(--blue)}
-.insight-card.green::before{background:var(--green)}
-.insight-card.amber::before{background:var(--amber)}
-.insight-card.red::before{background:var(--red)}
+.insight-card.blue .insight-bar{background:var(--blue)}
+.insight-card.green .insight-bar{background:var(--green)}
+.insight-card.amber .insight-bar{background:var(--amber)}
+.insight-card.red .insight-bar{background:var(--red)}
 .i-icon{
   width:32px;height:32px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;flex-shrink:0;
+  font-size:13px;flex-shrink:0;transition:background .3s,color .3s;
 }
-.i-icon.blue{background:var(--blue-lt);color:var(--blue)}
-.i-icon.green{background:var(--green-lt);color:var(--green)}
-.i-icon.amber{background:var(--amber-lt);color:var(--amber)}
-.i-icon.red{background:var(--red-lt);color:var(--red)}
+.insight-card.blue .i-icon{background:var(--blue-lt);color:var(--blue)}
+.insight-card.green .i-icon{background:var(--green-lt);color:var(--green)}
+.insight-card.amber .i-icon{background:var(--amber-lt);color:var(--amber)}
+.insight-card.red .i-icon{background:var(--red-lt);color:var(--red)}
 .i-title{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px;letter-spacing:.01em}
 .i-body{font-size:12px;color:var(--text);line-height:1.6;font-weight:400}
 .i-body strong{font-weight:600;color:var(--text)}
@@ -677,8 +677,9 @@ tr:not(.sub-row):not(.tot-row):hover td{background:#FAFAFA}
 
       <!-- Insight -->
       <div class="insight-card blue" id="insightCard">
-        <div class="i-icon blue" id="insightIcon"><i class="fa-solid fa-circle-info"></i></div>
-        <div>
+        <div class="insight-bar"></div>
+        <div class="i-icon" id="insightIcon"><i class="fa-solid fa-circle-info"></i></div>
+        <div style="flex:1;min-width:0">
           <div class="i-title" id="insightTitle">Aguardando dados</div>
           <div class="i-body" id="insightBody">Preencha os campos na barra lateral para visualizar a análise de compensação.</div>
         </div>
@@ -911,53 +912,67 @@ function med(arr,k){
 function buildInsight(vm,dA,dB,peers){
   const thr=+(document.getElementById('advThreshold')?.value)||30;
   const nB=document.getElementById('advNameB')?.value||'Futuro';
+  const card=document.getElementById('insightCard');
+  const icon=document.getElementById('insightIcon');
+
+  function setInsight(cls,icoHtml,title,body){
+    card.className='insight-card '+cls;
+    icon.innerHTML=icoHtml;
+    setT('insightTitle',title);
+    setH('insightBody',body);
+  }
+
   if(!dA.sal){
-    setH('insightCard','<div class="insight-card blue" id="insightCard">');
-    document.getElementById('insightCard').className='insight-card blue';
-    setH('insightIcon','<i class="fa-solid fa-circle-info"></i>');
-    document.getElementById('insightIcon').className='i-icon blue';
-    setT('insightTitle','Aguardando dados');
-    setH('insightBody','Preencha os campos na barra lateral para iniciar a análise.');
+    setInsight('blue','<i class="fa-solid fa-circle-info"></i>','Aguardando dados','Preencha os campos na barra lateral para iniciar a análise.');
     return;
   }
   const crA=Math.round(dA.cr*100);
   const chPct=dA.tot>0?Math.round(dA.pC/dA.tot*100):0;
-  let cls='blue',ico='<i class="fa-solid fa-circle-check"></i>',title='',body='';
 
   if(vm==='1'){
-    body=`A empresa investe <strong>${brl(dA.tot)}</strong> no período de ${months}m. Os encargos representam <strong>${chPct}%</strong> do custo total (${brl(dA.pC)}).`;
+    let body=`A empresa investe <strong>${brl(dA.tot)}</strong> no período de ${months}m. Os encargos representam <strong>${chPct}%</strong> do custo total (${brl(dA.pC)}).`;
     if(dA.cr>0){
-      if(crA<80){cls='amber';ico='<i class="fa-solid fa-triangle-exclamation"></i>';title='Atenção: Posicionamento Baixo';body+=` <br><br>Compa-Ratio de <strong class="c-amber">${crA}%</strong> — salário abaixo do midpoint. Risco de retenção e inequidade interna.`;}
-      else if(crA>120){cls='blue';ico='<i class="fa-solid fa-chart-line"></i>';title='Posicionamento Acima do Range';body+=` <br><br>Compa-Ratio de <strong>${crA}%</strong> — acima do topo da faixa. Avalie alinhamento com política salarial.`;}
-      else{cls='green';ico='<i class="fa-solid fa-circle-check"></i>';title='Posicionamento Adequado';body+=` <br><br>Compa-Ratio de <strong class="c-green">${crA}%</strong> — dentro do range da posição.`;}
-    }else{title='Análise de Custo';cls='blue';ico='<i class="fa-solid fa-coins"></i>';}
-  } else {
-    if(!dB||!dB.sal){
-      cls='blue';ico='<i class="fa-solid fa-circle-info"></i>';
-      title='Preencha o Cenário B';body='Insira os dados do cenário proposto para ativar a análise comparativa.';
-    }else{
-      const incP=dA.sal>0?(dB.sal-dA.sal)/dA.sal*100:0;
-      const delta=dB.tot-dA.tot;
-      const crB=Math.round(dB.cr*100);
-      title='Análise Comparativa';
-      body=`Aumento de <strong class="${incP>thr?'c-amber':'c-green'}">${incP.toFixed(1)}%</strong> no salário base, com impacto de <strong>${brl(delta)}</strong> no orçamento do período.`;
-      if(dB.cr>0){
-        body+=` Compa-Ratio passa de <strong>${crA}%</strong> para <strong class="${crB<80?'c-amber':crB>120?'c-blue':'c-green'}">${crB}%</strong>${crB<80?' — ainda abaixo do midpoint':crB>120?' — acima do topo da faixa':' — dentro do range'}.`;
+      if(crA<80){
+        body+=` <br><br>Compa-Ratio de <strong class="c-amber">${crA}%</strong> — salário abaixo do midpoint. Risco de retenção e inequidade interna.`;
+        setInsight('amber','<i class="fa-solid fa-triangle-exclamation"></i>','Atenção: Posicionamento Baixo',body);
+      }else if(crA>120){
+        body+=` <br><br>Compa-Ratio de <strong>${crA}%</strong> — acima do topo da faixa. Avalie alinhamento com política salarial.`;
+        setInsight('blue','<i class="fa-solid fa-chart-line"></i>','Posicionamento Acima do Range',body);
+      }else{
+        body+=` <br><br>Compa-Ratio de <strong class="c-green">${crA}%</strong> — dentro do range da posição.`;
+        setInsight('green','<i class="fa-solid fa-circle-check"></i>','Posicionamento Adequado',body);
       }
-      if(incP>thr){cls='amber';ico='<i class="fa-solid fa-triangle-exclamation"></i>';title='Alerta: Aumento Expressivo';body+=`<br><br>Aumento superior ao threshold de ${thr}%. Avalie proposta com escalonamento.`;}
-      else if(vm==='3'&&peers.length>0){
-        const mSal=med(peers,'sal');
-        const d=((dB.sal/mSal)-1)*100;
-        body+=`<br><br>Em relação à mediana dos pares (${brl(mSal)}): proposta <strong class="${Math.abs(d)<10?'c-green':d>0?'c-amber':'c-red'}">${d>0?'+':''}${d.toFixed(1)}%</strong>.`;
-        if(Math.abs(d)<10){title='Proposta Alinhada com Equilíbrio Interno';cls='green';ico='<i class="fa-solid fa-circle-check"></i>';}
-        else if(d>10){title='Proposta Acima da Mediana Interna';cls='amber';ico='<i class="fa-solid fa-arrow-trend-up"></i>';}
-        else{title='Proposta Abaixo da Mediana Interna';cls='amber';ico='<i class="fa-solid fa-arrow-trend-down"></i>';}
-      }else{cls='blue';ico='<i class="fa-solid fa-scale-balanced"></i>';}
+    }else{
+      setInsight('blue','<i class="fa-solid fa-coins"></i>','Análise de Custo',body);
     }
+    return;
   }
-  document.getElementById('insightCard').className='insight-card '+cls;
-  document.getElementById('insightIcon').className='i-icon '+cls;
-  setH('insightIcon',ico);setT('insightTitle',title);setH('insightBody',body);
+
+  if(!dB||!dB.sal){
+    setInsight('blue','<i class="fa-solid fa-circle-info"></i>','Preencha o Cenário B','Insira os dados do cenário proposto para ativar a análise comparativa.');
+    return;
+  }
+
+  const incP=dA.sal>0?(dB.sal-dA.sal)/dA.sal*100:0;
+  const delta=dB.tot-dA.tot;
+  const crB=Math.round(dB.cr*100);
+  let body=`Aumento de <strong class="${incP>thr?'c-amber':'c-green'}">${incP.toFixed(1)}%</strong> no salário base, com impacto de <strong>${brl(delta)}</strong> no orçamento do período.`;
+  if(dB.cr>0){
+    body+=` Compa-Ratio passa de <strong>${crA}%</strong> para <strong class="${crB<80?'c-amber':crB>120?'c-blue':'c-green'}">${crB}%</strong>${crB<80?' — ainda abaixo do midpoint':crB>120?' — acima do topo da faixa':' — dentro do range'}.`;
+  }
+  if(incP>thr){
+    body+=`<br><br>Aumento superior ao threshold de ${thr}%. Avalie proposta com escalonamento.`;
+    setInsight('amber','<i class="fa-solid fa-triangle-exclamation"></i>','Alerta: Aumento Expressivo',body);
+  }else if(vm==='3'&&peers.length>0){
+    const mSal=med(peers,'sal');
+    const d=((dB.sal/mSal)-1)*100;
+    body+=`<br><br>Em relação à mediana dos pares (${brl(mSal)}): proposta <strong class="${Math.abs(d)<10?'c-green':d>0?'c-amber':'c-red'}">${d>0?'+':''}${d.toFixed(1)}%</strong>.`;
+    if(Math.abs(d)<10) setInsight('green','<i class="fa-solid fa-circle-check"></i>','Proposta Alinhada com Equilíbrio Interno',body);
+    else if(d>10)      setInsight('amber','<i class="fa-solid fa-arrow-trend-up"></i>','Proposta Acima da Mediana Interna',body);
+    else               setInsight('amber','<i class="fa-solid fa-arrow-trend-down"></i>','Proposta Abaixo da Mediana Interna',body);
+  }else{
+    setInsight('blue','<i class="fa-solid fa-scale-balanced"></i>','Análise Comparativa',body);
+  }
 }
 
 function recalc(){
