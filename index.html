@@ -1,1084 +1,1138 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Total Rewards | Vini HRBP</title>
-    
-    <!-- Bibliotecas Externas -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Total Compensation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --bg:       #F5F5F7;
+  --surface:  #FFFFFF;
+  --surface2: #F9F9FB;
+  --border:   #E5E5EA;
+  --border2:  #D1D1D6;
+  --text:     #1D1D1F;
+  --text2:    #6E6E73;
+  --text3:    #AEAEB2;
+  --blue:     #0071E3;
+  --blue-lt:  #E8F1FD;
+  --blue-md:  #C7DDF9;
+  --green:    #34C759;
+  --green-lt: #E8F9ED;
+  --amber:    #FF9F0A;
+  --amber-lt: #FFF4E0;
+  --red:      #FF3B30;
+  --red-lt:   #FFECEB;
+  --purple:   #AF52DE;
+  --purple-lt:#F5EAFB;
+  --sans:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --r:        10px;
+  --r2:       14px;
+  --shadow:   0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+  --shadow2:  0 2px 8px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.05);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:var(--sans);background:var(--bg);color:var(--text);font-size:13px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
-    <style>
-        /* Estilo Warm Welcome: Tons mais suaves e limpos */
-        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #475569; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* ── TOPBAR ── */
+#topbar{
+  height:52px;display:flex;align-items:center;gap:0;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 20px;
+  position:relative;z-index:50;flex-shrink:0;
+}
+.tb-brand{
+  display:flex;align-items:center;gap:9px;
+  padding-right:20px;border-right:1px solid var(--border);margin-right:20px;
+}
+.tb-brand-icon{
+  width:28px;height:28px;background:var(--blue);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;color:white;font-size:12px;
+}
+.tb-brand-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+.tb-brand-sub{font-size:9px;color:var(--text3);margin-top:1px;letter-spacing:.02em}
 
-        .input-calc:focus { border-color: #4f46e5; ring: 2px; --tw-ring-color: rgba(79, 70, 229, 0.15); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15); }
-        .input-calc { transition: all 0.2s ease; }
+.tb-seg{display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--border)}
+.tb-seg-lbl{font-size:10px;font-weight:500;color:var(--text3);white-space:nowrap}
+.tc-select{
+  background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  padding:5px 26px 5px 10px;font-family:var(--sans);font-size:11px;font-weight:500;
+  color:var(--text);cursor:pointer;outline:none;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236E6E73' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 6px center;background-size:12px;
+  transition:border-color .15s;min-width:210px;
+}
+.tc-select:focus{border-color:var(--blue);outline:none}
 
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%;
-            background: #4f46e5; cursor: pointer; margin-top: -7px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-        }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%; height: 5px; cursor: pointer; background: #e2e8f0; border-radius: 3px;
-        }
+.proj-ctrl{display:flex;align-items:center;gap:9px}
+input[type=range].proj-slider{
+  width:90px;-webkit-appearance:none;height:3px;
+  background:var(--border2);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range].proj-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--blue);border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.15);
+  cursor:pointer;transition:transform .15s;
+}
+input[type=range].proj-slider::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.proj-badge{
+  font-size:11px;font-weight:500;color:var(--blue);
+  background:var(--blue-lt);border:1px solid var(--blue-md);
+  padding:3px 9px;border-radius:20px;min-width:44px;text-align:center;
+}
 
-        .scale-marker { position: absolute; bottom: 0; width: 1px; height: 5px; background-color: #cbd5e1; }
-        .scale-label { position: absolute; bottom: -14px; transform: translateX(-50%); font-size: 8px; color: #94a3b8; font-weight: 500; }
-        
-        .cr-pointer {
-            width: 0; height: 0; 
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 6px solid #334155;
-            position: absolute; top: -3px; transform: translateX(-50%);
-            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 20;
-        }
+.tb-spacer{flex:1}
+.tb-actions{display:flex;align-items:center;gap:7px}
+.tbtn{
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  border-radius:7px;border:1px solid var(--border);
+  background:var(--surface);font-family:var(--sans);font-size:11px;font-weight:500;
+  color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.tbtn:hover{background:var(--bg);border-color:var(--border2);color:var(--text)}
+.tbtn i{font-size:11px;color:var(--text3)}
+.tbtn.blue-btn{color:var(--blue);border-color:var(--blue-md);background:var(--blue-lt)}
+.tbtn.blue-btn:hover{background:var(--blue-md)}
+.tbtn.blue-btn i{color:var(--blue)}
 
-        /* Estilos da Tabela */
-        .tr-header-section { background-color: #eef2ff; color: #3730a3; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-        .tr-total { border-top: 2px solid #e2e8f0; background-color: #f8fafc; }
-        
-        /* Card Styles - Bordas mais arredondadas e sombras suaves para o Warm Welcome */
-        .exec-card { background: white; border: 1px solid #f1f5f9; border-top: 4px solid #4f46e5; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        .exec-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03); transform: translateY(-2px); }
-        
-        /* Select Customizado */
-        .select-warm { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
-    </style>
+/* ── LAYOUT ── */
+#app{display:flex;height:calc(100vh - 52px)}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:288px;min-width:288px;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;height:100%;
+}
+.sb-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+
+.sc-block{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  overflow:hidden;
+}
+.sc-head{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 14px;background:var(--surface2);border-bottom:1px solid var(--border);
+}
+.sc-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sc-dot.a{background:var(--blue)}
+.sc-dot.b{background:var(--green)}
+.sc-dot.p{background:var(--purple)}
+.sc-lbl{font-size:10px;font-weight:600;letter-spacing:-.01em}
+.sc-lbl.a{color:var(--blue)}
+.sc-lbl.b{color:var(--green)}
+.sc-lbl.p{color:var(--purple)}
+.sc-fields{padding:12px}
+.sc-fields .f+.f{margin-top:10px}
+
+.f label{
+  display:flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:4px;
+}
+.f label .help-ico{
+  cursor:pointer;color:var(--text3);font-size:9px;
+  transition:color .15s;
+}
+.f label .help-ico:hover{color:var(--blue)}
+
+.inp{
+  width:100%;padding:7px 10px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  font-family:var(--sans);font-size:12px;font-weight:400;color:var(--text);
+  outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,.1);background:white}
+.inp::placeholder{color:var(--text3)}
+.inp.mono{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.inp.hi-a{background:#F0F6FF;border-color:var(--blue-md);color:var(--blue)}
+.inp.hi-b{background:#F0FBF4;border-color:#B3E8C5;color:var(--green)}
+.bonus-row{display:flex;gap:7px}
+.bm{width:76px;text-align:center}
+
+.peer-row{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.peer-n{font-size:9px;font-weight:600;color:var(--text3);width:28px;text-align:right;flex-shrink:0}
+.peer-s{flex:1}
+.peer-p{width:46px;text-align:center}
+
+/* ── MAIN ── */
+#main{flex:1;overflow-y:auto;background:var(--bg)}
+.mi{padding:24px 28px 80px;max-width:960px}
+
+/* ── INSIGHT CARD ── */
+.insight-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:14px 18px;margin-bottom:20px;
+  display:flex;align-items:flex-start;gap:12px;
+  box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.insight-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  border-radius:3px 0 0 3px;
+}
+.insight-card.blue::before{background:var(--blue)}
+.insight-card.green::before{background:var(--green)}
+.insight-card.amber::before{background:var(--amber)}
+.insight-card.red::before{background:var(--red)}
+.i-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;
+}
+.i-icon.blue{background:var(--blue-lt);color:var(--blue)}
+.i-icon.green{background:var(--green-lt);color:var(--green)}
+.i-icon.amber{background:var(--amber-lt);color:var(--amber)}
+.i-icon.red{background:var(--red-lt);color:var(--red)}
+.i-title{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:3px;letter-spacing:.01em}
+.i-body{font-size:12px;color:var(--text);line-height:1.6;font-weight:400}
+.i-body strong{font-weight:600;color:var(--text)}
+.i-body .c-blue{color:var(--blue)}
+.i-body .c-green{color:var(--green)}
+.i-body .c-amber{color:var(--amber)}
+.i-body .c-red{color:var(--red)}
+
+/* ── KPIS ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:16px 18px;box-shadow:var(--shadow);transition:box-shadow .2s,transform .2s;
+  position:relative;overflow:hidden;
+}
+.kpi-card:hover{box-shadow:var(--shadow2);transform:translateY(-1px)}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:16px;right:16px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--k-clr,var(--blue)),transparent);
+  opacity:.6;
+}
+.kpi-card.blue{--k-clr:var(--blue)}
+.kpi-card.green{--k-clr:var(--green)}
+.kpi-card.purple{--k-clr:var(--purple)}
+
+.kpi-lbl{
+  font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:10px;display:flex;align-items:center;gap:5px;
+}
+.kpi-lbl i{font-size:10px}
+.kpi-num{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.kpi-usd{font-size:10px;color:var(--text3);margin-top:3px;font-variant-numeric:tabular-nums}
+.kpi-foot{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.kf-lbl{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.kf-val{font-size:11px;font-weight:500;color:var(--blue);font-variant-numeric:tabular-nums}
+
+/* compa-ratio bar */
+.cr-wrap{margin-top:10px}
+.cr-track{height:4px;border-radius:2px;background:var(--bg);position:relative;overflow:visible;border:1px solid var(--border)}
+.cr-zones{display:flex;height:100%;border-radius:2px;overflow:hidden}
+.cr-z1{width:40%;background:rgba(255,159,10,.3)}
+.cr-z2{width:20%;background:rgba(52,199,89,.4)}
+.cr-z3{width:40%;background:rgba(0,113,227,.3)}
+.cr-ptr{
+  position:absolute;top:-5px;
+  width:0;height:0;
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:7px solid var(--text);
+  transform:translateX(-50%);
+  transition:left .5s cubic-bezier(.34,1.56,.64,1);
+}
+.cr-ticks{display:flex;justify-content:space-between;margin-top:4px;font-size:8px;color:var(--text3);font-weight:500}
+.cr-badge{
+  font-size:9px;font-weight:600;padding:2px 8px;border-radius:20px;
+  margin-top:6px;display:inline-block;
+}
+.crb-lag{background:var(--amber-lt);color:var(--amber)}
+.crb-match{background:var(--green-lt);color:var(--green)}
+.crb-lead{background:var(--blue-lt);color:var(--blue)}
+
+/* ── SECTION ── */
+.section{margin-bottom:18px}
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.sec-title{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:6px}
+.sec-title i{color:var(--text3);font-size:10px}
+
+/* ── DELTA BAR ── */
+.delta-bar{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:14px 18px;display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;box-shadow:var(--shadow);
+}
+.dl-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:4px}
+.dl-val{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dl-usd{font-size:9px;color:var(--text3);margin-top:2px;font-variant-numeric:tabular-nums}
+.dl-pill{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+.dp-pos{background:var(--green-lt);color:var(--green)}
+.dp-neg{background:var(--red-lt);color:var(--red)}
+.dp-zero{background:var(--bg);color:var(--text3);border:1px solid var(--border)}
+
+/* ── COMP CARDS ── */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.comp-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:18px;text-align:center;box-shadow:var(--shadow);
+}
+.comp-card.b{border-color:#B3E8C5;background:#FAFFFE}
+.comp-tag{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:10px;display:inline-block}
+.ct-a{background:var(--blue-lt);color:var(--blue)}
+.ct-b{background:var(--green-lt);color:var(--green)}
+.comp-val{font-size:22px;font-weight:600;color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin-bottom:2px}
+.comp-sub{font-size:9px;color:var(--text3);text-transform:uppercase;font-weight:500;letter-spacing:.04em}
+.comp-cr{margin-top:8px;font-size:10px;color:var(--text2);font-weight:500}
+
+/* ── PROPOSAL ── */
+.prop-strip{
+  background:var(--text);border-radius:var(--r2);
+  padding:18px 22px;color:white;position:relative;overflow:hidden;margin-bottom:12px;
+}
+.prop-strip::after{
+  content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(255,255,255,.05) 0%,transparent 70%);
+}
+.prop-grid{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:14px;position:relative;z-index:1}
+.prop-col label{font-size:8px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;display:block}
+.prop-sal{font-size:20px;font-weight:600;color:white;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.prop-cr-sub{font-size:9px;color:rgba(255,255,255,.4);margin-top:3px;font-variant-numeric:tabular-nums}
+.prop-arr{color:rgba(255,255,255,.25);font-size:14px}
+.prop-inc{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:9px;padding:11px 15px;text-align:right;min-width:140px;
+  position:relative;z-index:1;
+}
+.prop-inc label{font-size:8px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;display:block}
+.prop-inc-val{font-size:18px;font-weight:600;color:white;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.prop-inc-pct{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:4px;display:inline-block;background:rgba(52,199,89,.2);color:#34C759}
+
+.esc-alert{
+  background:var(--amber-lt);border:1px solid rgba(255,159,10,.3);border-radius:8px;
+  padding:9px 13px;font-size:11px;color:var(--amber);font-weight:500;
+  display:flex;gap:8px;align-items:flex-start;margin-top:10px;position:relative;z-index:1;
+}
+
+/* ── EQ ── */
+.eq-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.eq-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;box-shadow:var(--shadow)}
+.eq-kpi label{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);margin-bottom:7px;display:block}
+.eq-val{font-size:16px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.eq-note{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* ── TABLE ── */
+.tbl-wrap{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow);margin-bottom:16px;
+}
+.tbl-bar{
+  padding:11px 18px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;background:var(--surface2);
+}
+.tbl-ttl{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text2);display:flex;align-items:center;gap:6px}
+.tbl-ttl i{color:var(--text3);font-size:10px}
+.btn-export{
+  display:flex;align-items:center;gap:5px;padding:4px 11px;
+  background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  font-family:var(--sans);font-size:10px;font-weight:500;color:var(--text2);
+  cursor:pointer;transition:all .15s;
+}
+.btn-export:hover{background:var(--green-lt);border-color:#B3E8C5;color:var(--green)}
+.ass-strip{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
+.ass-block{padding:10px 18px;border-right:1px solid var(--border)}
+.ass-block:last-child{border-right:none}
+.ass-tag{font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.ass-tag.a{color:var(--blue)}.ass-tag.b{color:var(--green)}
+.ass-vals{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.av-item label{font-size:8px;text-transform:uppercase;letter-spacing:.04em;color:var(--text3);font-weight:500}
+.av-item .av{font-size:11px;font-weight:500;color:var(--text);margin-top:1px;font-variant-numeric:tabular-nums}
+
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead tr{background:var(--surface2)}
+th{padding:8px 18px;font-size:8px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+th.r{text-align:right}
+td{padding:9px 18px;border-bottom:1px solid var(--border);color:var(--text2)}
+td:first-child{color:var(--text);font-weight:400}
+.td-r{text-align:right;font-variant-numeric:tabular-nums;font-size:11px;color:var(--text);font-weight:500}
+.td-usd{display:block;font-size:8.5px;color:var(--text3);margin-top:1px;font-variant-numeric:tabular-nums}
+tr.sub-row td{background:var(--surface2);font-weight:600;color:var(--text);border-top:1px solid var(--border)}
+tr.tot-row td{background:var(--text);color:white;font-weight:600;font-size:12px}
+tr.tot-row .td-r{color:white}
+tr.tot-row .td-usd{color:rgba(255,255,255,.4)}
+tr:not(.sub-row):not(.tot-row):hover td{background:#FAFAFA}
+.d-pos{color:var(--amber)!important}
+.d-neg{color:var(--text3)!important}
+.tbl-foot{padding:9px 18px;background:var(--surface2);border-top:1px solid var(--border);font-size:9px;color:var(--text3);line-height:1.6}
+.tbl-foot strong{color:var(--text2);font-weight:600}
+
+/* eq table */
+.eq-tbl-wrap{border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:12px}
+.eq-tbl-foot{padding:8px 16px;background:var(--surface2);border-top:1px solid var(--border);font-size:9px;color:var(--text3)}
+
+/* ── CHART ── */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:18px 20px;box-shadow:var(--shadow);margin-bottom:16px}
+.chart-title{font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.chart-title i{color:var(--text3);font-size:10px}
+
+/* ── ADV MODAL ── */
+#advPanel{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.3);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+#advPanel.open{display:flex}
+.adv-modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  width:460px;max-width:94vw;max-height:86vh;overflow-y:auto;
+  box-shadow:0 32px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.1);
+  animation:fadeUp .2s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.adv-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--surface);z-index:1;border-radius:18px 18px 0 0;
+}
+.adv-h3{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.adv-h3 i{color:var(--text3);font-size:12px}
+.btn-close{
+  width:26px;height:26px;border-radius:50%;border:1px solid var(--border);
+  background:var(--surface2);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:var(--text3);font-size:11px;transition:background .15s;
+}
+.btn-close:hover{background:var(--bg)}
+.adv-body{padding:18px 20px;display:flex;flex-direction:column;gap:18px}
+.adv-sec-lbl{font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:9px}
+.adv-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.adv-hint{font-size:9px;color:var(--text3);margin-top:4px;line-height:1.5}
+
+/* ── GLOSSARY MODAL ── */
+#glossModal{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.3);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+#glossModal.open{display:flex}
+.gloss-modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  width:520px;max-width:94vw;max-height:86vh;overflow-y:auto;
+  box-shadow:0 32px 80px rgba(0,0,0,.2),0 8px 24px rgba(0,0,0,.1);
+  animation:fadeUp .2s ease;
+}
+.gloss-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--surface);z-index:1;border-radius:18px 18px 0 0;
+}
+.gloss-h3{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.gloss-h3 i{color:var(--blue);font-size:13px}
+.gloss-body{padding:4px 0 8px}
+.gloss-item{padding:14px 20px;border-bottom:1px solid var(--border)}
+.gloss-item:last-child{border-bottom:none}
+.gloss-term{font-size:12px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:7px}
+.gloss-term .g-badge{
+  font-size:8px;font-weight:600;padding:2px 7px;border-radius:20px;letter-spacing:.04em;
+  background:var(--blue-lt);color:var(--blue);
+}
+.gloss-def{font-size:11px;color:var(--text2);line-height:1.65;font-weight:400}
+.gloss-def code{
+  background:var(--bg);border:1px solid var(--border);border-radius:4px;
+  padding:1px 5px;font-size:10px;color:var(--text);font-family:monospace;
+}
+
+/* ── SAVE IND ── */
+#saveInd{
+  position:fixed;top:12px;right:14px;z-index:300;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(10px);
+  border:1px solid var(--border);border-radius:20px;
+  padding:5px 12px;font-size:10px;font-weight:500;color:var(--text2);
+  display:flex;align-items:center;gap:5px;
+  opacity:0;transition:opacity .3s;pointer-events:none;
+  box-shadow:var(--shadow);
+}
+#saveInd i{color:var(--green);font-size:10px}
+
+.hidden{display:none!important}
+
+/* tooltip */
+.tooltip{
+  position:relative;display:inline-flex;
+}
+.tooltip:hover .tt-box{opacity:1;pointer-events:auto;transform:translateY(0)}
+.tt-box{
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(4px);
+  background:var(--text);color:white;font-size:9px;font-weight:500;
+  padding:4px 9px;border-radius:6px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;
+  z-index:100;line-height:1.4;max-width:200px;white-space:normal;text-align:center;
+}
+
+/* credit */
+.credit{text-align:right;padding:6px 0 2px;font-size:9px;color:var(--text3);font-weight:400}
+.credit span{color:var(--text2);font-weight:500}
+</style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden relative" onload="initApp()">
+<body>
 
-    <!-- Indicador de Salvamento -->
-    <div id="saveIndicator" class="fixed top-4 right-4 z-50 bg-white/90 backdrop-blur border border-slate-100 shadow-md px-4 py-2 rounded-full text-[11px] font-medium text-slate-500 flex items-center gap-2 opacity-0 transition-opacity pointer-events-none">
-        <i class="fa-solid fa-floppy-disk text-indigo-500"></i> Alterações salvas
+<div id="saveInd"><i class="fa-solid fa-circle-check"></i> Salvo</div>
+
+<!-- GLOSSARY MODAL -->
+<div id="glossModal" onclick="if(event.target===this)closeGloss()">
+  <div class="gloss-modal">
+    <div class="gloss-head">
+      <div class="gloss-h3"><i class="fa-solid fa-book-open"></i> Glossário</div>
+      <button class="btn-close" onclick="closeGloss()"><i class="fa-solid fa-xmark"></i></button>
     </div>
-
-    <!-- APP CONTAINER -->
-    <div id="appContainer" class="flex flex-col md:flex-row h-full transition-opacity duration-700">
-        
-        <!-- SIDEBAR (Esquerda) -->
-        <aside class="w-full md:w-[380px] bg-white border-r border-slate-200 flex flex-col h-full shadow-[4px_0_24px_rgba(0,0,0,0.03)] z-20 relative">
-            
-            <!-- HEADER DA SIDEBAR -->
-            <div class="p-6 border-b border-slate-100 bg-white shrink-0 z-10">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <h1 class="text-xl font-bold text-slate-800 leading-tight">Total Compensation</h1>
-                        <p class="text-[10px] text-indigo-500 uppercase tracking-widest font-bold mt-1">HR TOOLS • BRASIL</p>
-                    </div>
-                    <div class="text-right">
-                        <img id="flagDisplay" src="https://flagcdn.com/w40/br.png" class="h-6 rounded shadow-sm">
-                    </div>
-                </div>
-
-                <!-- DESTAQUE: Visão de Análise (Warm Welcome) -->
-                <div class="bg-indigo-50/70 border border-indigo-100 rounded-xl p-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                    <div class="absolute left-0 top-0 w-1.5 h-full bg-indigo-500"></div>
-                    <label class="block text-[11px] font-extrabold text-indigo-900 uppercase mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group text-indigo-500 text-sm"></i> Visão de Análise
-                    </label>
-                    <p class="text-[10px] text-indigo-600/80 mb-3 leading-relaxed font-medium">Selecione o modo de apresentação para ajustar os cards e comparações da tela.</p>
-                    <select id="viewMode" class="select-warm w-full text-xs border border-indigo-200 rounded-lg p-3 bg-white focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-indigo-900 shadow-sm cursor-pointer transition-all" onchange="changeViewMode()">
-                        <option value="1">1. Análise Atual (Apenas Cenário A)</option>
-                        <option value="2">2. Análise Comparativa (Cenários A e B)</option>
-                        <option value="3">3. Comparativa + Equilíbrio Interno</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- ÁREA DE SCROLL (Inputs) -->
-            <div class="flex-1 overflow-y-auto p-6 space-y-8 pb-10 relative">
-                
-                <!-- PAINEL AVANÇADO -->
-                <div id="advancedPanel" class="hidden absolute inset-0 bg-white/95 backdrop-blur-sm z-20 p-6 space-y-5 animate-fade-in shadow-lg border-b border-slate-200">
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                        <h3 class="text-xs font-bold text-amber-600 uppercase">Configurações Avançadas</h3>
-                        <button onclick="toggleAdvanced()" class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Fator Encargos</label>
-                                <input type="number" id="advFactor" class="input-calc w-full text-xs border border-slate-300 rounded-lg p-2.5 text-indigo-700 font-bold bg-slate-50" value="1.49" step="0.01">
-                                <p class="text-[8px] text-slate-400 mt-2 leading-tight">Ex: 1.49 representa 49% de acréscimo. Esse é o fator da cia utilizado para cálculos de encargos.</p>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Câmbio Dólar (R$)</label>
-                                <input type="number" id="advExchange" class="input-calc w-full text-xs border border-slate-300 rounded-lg p-2.5 text-emerald-700 font-bold bg-slate-50" value="5.50" step="0.01">
-                                <p class="text-[8px] text-slate-400 mt-2 leading-tight">Taxa de conversão p/ USD no detalhamento.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-100">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1.5"><i class="fa-regular fa-calendar text-slate-400"></i> Projeção</span>
-                        <span id="projMonthsDisplay" class="text-xs font-bold text-indigo-700 bg-white px-2.5 py-1 rounded-md border border-indigo-100 shadow-sm">12 Meses</span>
-                    </div>
-                    <input type="range" id="projMonths" min="1" max="12" value="12" class="w-full">
-                    <div class="flex justify-between text-[9px] text-slate-400 mt-2 font-medium">
-                        <span>1m</span><span>6m</span><span>12m</span>
-                    </div>
-                </div>
-
-                <!-- CENÁRIO A (INPUTS) -->
-                <div id="scenarioA" class="space-y-4">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h2 class="text-xs font-bold text-indigo-700 uppercase tracking-wide flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-sm"></span> Cenário A (Atual)
-                        </h2>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Salário Base</label>
-                        <input type="text" id="salaryA" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 font-medium placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Midpoint da Posição</label>
-                        <input type="text" id="midpointA" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Bônus Target (Salários)</label>
-                        <div class="flex gap-2">
-                            <div class="w-24 relative">
-                                <input type="number" id="bonusMultiA" placeholder="0.0" step="0.1" class="input-calc w-full pl-3 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-center font-bold text-indigo-700 bg-indigo-50/50 transition-colors">
-                            </div>
-                            <div class="flex-1">
-                                <input type="text" id="bonusValA" readonly class="w-full px-3.5 py-2.5 text-sm border border-slate-200 bg-slate-50 rounded-lg text-slate-500 font-medium" placeholder="Valor Calculado">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Benefícios (VR e VA)</label>
-                        <input type="text" id="flexBenA" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-                </div>
-
-                <!-- CENÁRIO B (INPUTS) -->
-                <div id="scenarioB" class="hidden space-y-4 pt-4 border-t border-dashed border-slate-300">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h2 class="text-xs font-bold text-emerald-700 uppercase tracking-wide flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span> Cenário B (Proposto)
-                        </h2>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Novo Salário Base</label>
-                        <input type="text" id="salaryB" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 font-medium placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Midpoint da Posição</label>
-                        <input type="text" id="midpointB" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Bônus Target (Salários)</label>
-                        <div class="flex gap-2">
-                            <div class="w-24 relative">
-                                <input type="number" id="bonusMultiB" placeholder="0.0" step="0.1" class="input-calc w-full pl-3 pr-4 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-center font-bold text-emerald-700 bg-emerald-50/50 transition-colors">
-                            </div>
-                            <div class="flex-1">
-                                <input type="text" id="bonusValB" readonly class="w-full px-3.5 py-2.5 text-sm border border-slate-200 bg-slate-50 rounded-lg text-slate-500 font-medium" placeholder="Valor Calculado">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">Benefícios (VR e VA)</label>
-                        <input type="text" id="flexBenB" class="fmt-curr input-calc w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg outline-none text-slate-700 placeholder-slate-300 transition-colors" placeholder="R$ 0,00">
-                    </div>
-                </div>
-
-                <!-- EQUIDADE (INPUTS) -->
-                <div id="equityInputs" class="hidden space-y-4 pt-4 border-t border-dashed border-slate-300">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                        <h2 class="text-xs font-bold text-purple-700 uppercase tracking-wide flex items-center gap-2">
-                            <i class="fa-solid fa-users text-purple-500"></i> Equilíbrio Interno
-                        </h2>
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-3 uppercase tracking-wide">Salário Base e Performance dos Pares</label>
-                        <div class="space-y-2.5">
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold w-9 text-right">Par 1:</span>
-                                <input type="text" id="peer1" class="fmt-curr input-calc flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors" placeholder="Salário (R$)">
-                                <input type="text" id="perf1" class="input-calc w-14 px-2 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors text-center" placeholder="Nota">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold w-9 text-right">Par 2:</span>
-                                <input type="text" id="peer2" class="fmt-curr input-calc flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors" placeholder="Salário (R$)">
-                                <input type="text" id="perf2" class="input-calc w-14 px-2 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors text-center" placeholder="Nota">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold w-9 text-right">Par 3:</span>
-                                <input type="text" id="peer3" class="fmt-curr input-calc flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors" placeholder="Salário (R$)">
-                                <input type="text" id="perf3" class="input-calc w-14 px-2 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors text-center" placeholder="Nota">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold w-9 text-right">Par 4:</span>
-                                <input type="text" id="peer4" class="fmt-curr input-calc flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors" placeholder="Salário (R$)">
-                                <input type="text" id="perf4" class="input-calc w-14 px-2 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors text-center" placeholder="Nota">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[10px] text-slate-400 font-bold w-9 text-right">Par 5:</span>
-                                <input type="text" id="peer5" class="fmt-curr input-calc flex-1 px-3 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors" placeholder="Salário (R$)">
-                                <input type="text" id="perf5" class="input-calc w-14 px-2 py-2 text-xs border border-slate-300 rounded-lg outline-none focus:border-purple-400 transition-colors text-center" placeholder="Nota">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- RODAPÉ DA SIDEBAR (Botões de Ação) -->
-            <div class="p-5 border-t border-slate-200 bg-slate-50/80 shrink-0 z-10 grid grid-cols-2 gap-3">
-                <button onclick="resetData()" class="text-xs font-bold bg-white hover:bg-slate-100 text-slate-600 py-2.5 rounded-lg border border-slate-300 transition flex items-center justify-center gap-2 shadow-sm hover:shadow">
-                    <i class="fa-solid fa-eraser"></i> Limpar
-                </button>
-                <button onclick="toggleAdvanced()" class="text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-700 py-2.5 rounded-lg border border-amber-200 transition flex items-center justify-center gap-2 shadow-sm hover:shadow">
-                    <i class="fa-solid fa-sliders"></i> Avançado
-                </button>
-            </div>
-        </aside>
-
-        <!-- DASHBOARD (Direita) -->
-        <main class="flex-1 flex flex-col h-full bg-[#F8FAFC] relative overflow-hidden">
-            
-            <div class="flex-1 overflow-y-auto p-6 md:p-10 space-y-8 pb-20">
-                
-                <!-- DASHBOARD PADRÃO -->
-                <div id="standardView" class="animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        
-                        <!-- Custo Total -->
-                        <div class="exec-card p-6 relative overflow-hidden group flex flex-col justify-between">
-                            <div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider lbl-annual-cost flex items-center gap-2">
-                                    <i class="fa-solid fa-coins text-indigo-400"></i> Custo Total (12m)
-                                </p>
-                                <h2 class="text-3xl font-bold text-slate-800 mt-3 tracking-tight" id="kpiTotalA">-</h2>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                <div>
-                                    <p class="text-[10px] text-slate-500 font-bold uppercase">Fixo Mensal</p>
-                                    <p class="text-sm font-bold text-indigo-700 mt-0.5" id="kpiMonthlyA">-</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Posicionamento -->
-                        <div class="exec-card p-6 relative overflow-hidden flex flex-col justify-between">
-                            <div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-chart-simple text-indigo-400"></i> Compa-Ratio
-                                </p>
-                                <div class="flex justify-between items-baseline mt-3">
-                                    <h3 class="text-3xl font-bold text-slate-800" id="kpiCRA">0%</h3>
-                                    <span id="kpiCRLabelA" class="text-[10px] font-bold px-2.5 py-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-100">--</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4">
-                                <div class="relative h-2 w-full mt-2 select-none">
-                                    <div class="absolute inset-0 bg-slate-100 rounded-full overflow-hidden flex">
-                                        <!-- Cores Saudáveis ajustadas: <80% Amarelo, 80-120% Verde, >120% Azul -->
-                                        <div class="w-[40%] h-full bg-amber-400/60 border-r border-white"></div>
-                                        <div class="w-[20%] h-full bg-emerald-500/60 border-r border-white"></div>
-                                        <div class="w-[40%] h-full bg-blue-500/60"></div>
-                                    </div>
-                                    <div id="kpiCRPointerA" class="cr-pointer" style="left: 0%;"></div>
-                                </div>
-                                <div class="relative h-4 w-full mt-1">
-                                    <div class="scale-marker" style="left: 40%"></div><span class="scale-label" style="left: 40%">80%</span>
-                                    <div class="scale-marker" style="left: 50%"></div><span class="scale-label" style="left: 50%">100%</span>
-                                    <div class="scale-marker" style="left: 60%"></div><span class="scale-label" style="left: 60%">120%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Análise -->
-                        <div class="exec-card p-6 flex flex-col justify-between">
-                            <div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                                    <i class="fa-solid fa-bolt text-indigo-400"></i> Análise de Impacto
-                                </p>
-                                <p id="insightText" class="text-xs text-slate-600 leading-relaxed font-medium">
-                                    Preencha os dados para visualizar a análise.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DASHBOARD COMPARATIVO -->
-                <div id="comparativeView" class="hidden animate-fade-in space-y-6">
-                    <div class="exec-card p-0 overflow-hidden">
-                        <div class="p-5 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
-                            <h4 class="text-xs font-bold text-indigo-900 uppercase tracking-widest flex items-center gap-2.5">
-                                <div class="bg-indigo-100 text-indigo-600 w-6 h-6 rounded-md flex items-center justify-center"><i class="fa-solid fa-scale-balanced"></i></div>
-                                Análise Comparativa de Custos
-                            </h4>
-                            <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-sm flex items-center gap-3">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase">Impacto Budget (Delta):</span>
-                                <span class="text-sm font-extrabold text-slate-800 leading-tight" id="compDeltaVal">-</span>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 divide-x divide-slate-100">
-                            <!-- Side A -->
-                            <div class="p-6 text-center flex flex-col items-center justify-center">
-                                <div class="inline-block px-3 py-1 rounded-full bg-indigo-50 text-[10px] font-bold text-indigo-600 mb-4 border border-indigo-100 shadow-sm">Cenário A (Atual)</div>
-                                <div class="text-3xl font-bold text-slate-700 mb-1" id="compAnnualA">-</div>
-                                <p class="text-[10px] text-slate-400 uppercase font-medium mt-1 mb-4">Custo Total</p>
-                                <div class="bg-slate-50 border border-slate-200 text-slate-600 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                                    <i class="fa-solid fa-bullseye text-indigo-400"></i> CR (Midpoint): <span id="compCRA" class="text-indigo-700">-</span>
-                                </div>
-                            </div>
-                            <!-- Side B -->
-                            <div class="p-6 text-center bg-emerald-50/30 flex flex-col items-center justify-center">
-                                <div class="inline-block px-3 py-1 rounded-full bg-emerald-50 text-[10px] font-bold text-emerald-600 mb-4 border border-emerald-100 shadow-sm">Cenário B (Proposto)</div>
-                                <div class="text-3xl font-bold text-slate-700 mb-1" id="compAnnualB">-</div>
-                                <p class="text-[10px] text-slate-400 uppercase font-medium mt-1 mb-4">Custo Total</p>
-                                <div class="bg-white border border-emerald-100 text-slate-600 text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
-                                    <i class="fa-solid fa-bullseye text-emerald-500"></i> CR (Midpoint): <span id="compCRB" class="text-emerald-700">-</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-br from-slate-800 to-indigo-900 rounded-2xl shadow-lg p-8 text-white relative overflow-hidden">
-                        <!-- Elementos de Design Warm Welcome -->
-                        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-5 rounded-full blur-2xl"></div>
-                        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-32 h-32 bg-indigo-400 opacity-10 rounded-full blur-xl"></div>
-                        
-                        <div class="relative z-10">
-                            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-3 mb-6">
-                                        <div class="bg-white/10 p-2 rounded-lg text-indigo-200 backdrop-blur-sm"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                                        <h4 class="text-xs font-bold uppercase tracking-widest text-indigo-100">Proposta Base</h4>
-                                    </div>
-                                    <div class="flex items-center gap-6">
-                                        <div>
-                                            <p class="text-[10px] text-indigo-300/80 uppercase font-bold mb-1.5 tracking-wider">Atual</p>
-                                            <div class="text-2xl font-bold text-white/90" id="propSalaryA">-</div>
-                                            <div class="mt-2 inline-flex items-center gap-1.5 bg-black/20 px-2 py-1 rounded text-[10px] font-medium text-indigo-200">
-                                                CR: <span id="propCRA" class="font-bold text-white">-</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex flex-col items-center justify-center px-2">
-                                            <div class="w-8 h-px bg-indigo-400/50 mb-1"></div>
-                                            <i class="fa-solid fa-chevron-right text-indigo-400 text-sm"></i>
-                                            <div class="w-8 h-px bg-indigo-400/50 mt-1"></div>
-                                        </div>
-                                        <div>
-                                            <p class="text-[10px] text-indigo-300/80 uppercase font-bold mb-1.5 tracking-wider">Novo</p>
-                                            <div class="text-4xl font-extrabold text-white tracking-tight" id="propSalaryB">-</div>
-                                            <div class="mt-2 inline-flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded text-[10px] font-medium text-emerald-100 border border-emerald-500/30">
-                                                CR: <span id="propCRB" class="font-bold text-white">-</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col items-end gap-2 w-full md:w-auto mt-4 md:mt-0">
-                                    <div class="bg-white/10 px-5 py-4 rounded-xl text-right backdrop-blur-md border border-white/10 shadow-inner w-full md:w-auto">
-                                        <p class="text-[10px] text-indigo-200 uppercase font-bold mb-2 tracking-wider">Aumento Real (Base)</p>
-                                        <div class="flex items-baseline gap-3 justify-end">
-                                            <div class="text-xl font-bold text-emerald-400" id="propIncreaseVal">-</div>
-                                            <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-md font-bold border border-emerald-500/30" id="propIncreasePct">+0%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Alerta de Escalonamento -->
-                            <div id="escalonamentoAlert" class="hidden mt-6 bg-amber-500/20 border border-amber-500/30 text-amber-100 text-[11px] p-3 rounded-xl flex items-center gap-2.5 font-medium backdrop-blur-md shadow-sm">
-                                <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm"></i>
-                                <span class="tracking-wide">O aumento proposto é superior a 30%. Sugere-se avaliar uma proposta com escalonamento (faseamento) para diluição do impacto financeiro.</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DASHBOARD EQUIDADE (VIEW 3) -->
-                <div id="equityView" class="hidden animate-fade-in bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
-                    <h4 class="text-xs font-bold text-slate-800 mb-6 uppercase tracking-wide flex items-center gap-2 border-b border-slate-100 pb-4">
-                        <div class="bg-purple-100 text-purple-600 w-7 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
-                        Análise de Equilíbrio Interno
-                    </h4>
-                    
-                    <!-- KPI Cards Equidade -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="p-5 bg-purple-50/60 rounded-xl border border-purple-100 transition-transform hover:-translate-y-1">
-                            <p class="text-[10px] text-purple-600 font-bold uppercase mb-2 tracking-wider">Mediana Base (Pares)</p>
-                            <div class="text-3xl font-bold text-purple-900" id="eqMedian">-</div>
-                            <p class="text-[10px] text-slate-500 mt-3 font-medium">Baseado nos inputs laterais</p>
-                        </div>
-                        <div class="p-5 bg-emerald-50/60 rounded-xl border border-emerald-100 transition-transform hover:-translate-y-1">
-                            <p class="text-[10px] text-emerald-600 font-bold uppercase mb-2 tracking-wider">Proposta (Cenário B)</p>
-                            <div class="text-3xl font-bold text-emerald-900" id="eqPropB">-</div>
-                            <p class="text-[10px] text-slate-500 mt-3 font-medium" id="eqCrbTxt">Compa-Ratio: --</p>
-                        </div>
-                        <div class="p-5 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-center transition-transform hover:-translate-y-1">
-                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2">Posição Proposta vs Mediana</p>
-                            <div class="flex items-baseline gap-2 mt-1">
-                                <p class="text-3xl font-bold text-slate-800" id="eqPos">0%</p>
-                            </div>
-                            <p class="text-[10px] font-medium mt-3" id="eqInsight">Aguardando dados...</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Tabela de Comparação Maçã x Maçã -->
-                    <div class="overflow-x-auto mt-4 border border-slate-100 rounded-xl shadow-sm">
-                        <table class="w-full text-[11px] text-left border-collapse" id="equityTable">
-                            <thead>
-                                <tr class="bg-purple-50/80 text-purple-800 uppercase tracking-wider">
-                                    <th class="p-4 border-b border-purple-100 font-bold">Colaborador</th>
-                                    <th class="p-4 border-b border-purple-100 text-right font-bold">Salário Base (Mês)</th>
-                                    <th class="p-4 border-b border-purple-100 text-right font-bold">Target Bônus (Ano)</th>
-                                    <th class="p-4 border-b border-purple-100 text-right font-bold">Benefícios (Ano)</th>
-                                    <th class="p-4 border-b border-purple-100 text-right font-extrabold text-indigo-900">Total Comp (Ano)</th>
-                                    <th class="p-4 border-b border-purple-100 text-right font-bold">Δ Total vs Proposta</th>
-                                </tr>
-                            </thead>
-                            <tbody id="equityTableBody" class="divide-y divide-slate-100 text-xs text-slate-600">
-                                <!-- Populated via JS -->
-                            </tbody>
-                        </table>
-                        <div class="px-5 py-3 bg-purple-50/40 text-[10px] text-purple-700 text-right font-medium border-t border-purple-100">
-                            <i class="fa-solid fa-circle-info mr-1"></i> Total Comp dos Pares é calculado simulando o Target de Bônus e pacote de Benefícios do <b class="font-bold">Cenário B</b>.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DETALHAMENTO GERAL -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-fade-in mt-8">
-                    <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase flex items-center gap-2 tracking-wide">
-                            <div class="bg-indigo-100 text-indigo-500 w-6 h-6 rounded flex items-center justify-center"><i class="fa-solid fa-table-list"></i></div>
-                            Detalhamento Financeiro (Dupla Moeda)
-                        </h4>
-                        <button onclick="exportTableToExcel()" class="text-[10px] font-bold text-indigo-700 bg-white border border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 px-4 py-2 rounded-lg transition shadow-sm flex items-center gap-2 cursor-pointer">
-                            <i class="fa-solid fa-file-excel text-emerald-600 text-sm"></i> Exportar .XLS
-                        </button>
-                    </div>
-                    
-                    <div id="assumptionsCards" class="grid grid-cols-1 md:grid-cols-2 gap-5 px-8 pt-6 pb-3">
-                        <!-- Filled by JS -->
-                    </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border-collapse" id="costTable">
-                            <thead>
-                                <!-- JS Generates Headers -->
-                            </thead>
-                            <tbody class="text-slate-600 divide-y divide-slate-100 font-medium">
-                                <!-- Dynamic Rows -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Rodapé da Tabela com Explicações -->
-                    <div class="px-8 py-5 bg-indigo-50/50 border-t border-indigo-100 flex items-start gap-4 text-[10px] text-slate-600 leading-relaxed">
-                        <div class="bg-indigo-100 p-1.5 rounded-full mt-0.5"><i class="fa-solid fa-circle-info text-indigo-500 text-sm"></i></div>
-                        <div>
-                            <p class="mb-1.5"><strong class="text-indigo-900 font-bold">Conversão USD:</strong> Valores em dólar abaixo do BRL calculados com a taxa de <strong>R$ <span id="lblExRate">5,50</span></strong> (Ajuste via menu Avançado).</p>
-                            <p><strong class="text-indigo-900 font-bold">Cálculo de Encargos:</strong> A análise utiliza o Fator Multiplicador (<strong><span id="lblFactor">1.49</span></strong>) aplicado sobre o Salário Anual (Base + 13º + Férias + Benefícios). Em caso de particularidades de encargos para esta posição, altere o fator nas Configurações Avançadas.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gráfico de Composição -->
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mt-6">
-                    <h4 class="text-xs font-bold text-slate-800 mb-6 uppercase tracking-wide flex items-center gap-2">
-                        <i class="fa-solid fa-chart-pie text-indigo-400"></i> Composição do Custo Anual
-                    </h4>
-                    <div class="relative h-[280px] w-full">
-                        <canvas id="mainChart"></canvas>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- RODAPÉ DA TELA PRINCIPAL FIXO -->
-            <footer class="bg-white border-t border-slate-200 py-4 px-8 flex justify-between items-center z-30 text-[11px] text-slate-500 absolute bottom-0 w-full shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
-                <span></span> <!-- Deixado vazio para remover V26.0 -->
-                <div class="flex items-center gap-1.5 w-full justify-end font-medium">
-                    <span>Desenvolvido por</span>
-                    <span class="font-bold text-indigo-700 tracking-wide">Vinicius Carlos</span>
-                </div>
-            </footer>
-        </main>
+    <div class="gloss-body">
+      <div class="gloss-item">
+        <div class="gloss-term">Salário Base <span class="g-badge">Fixo</span></div>
+        <div class="gloss-def">Remuneração mensal bruta acordada em contrato CLT, antes de descontos. Base de cálculo para todos os demais componentes.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Midpoint <span class="g-badge">Estrutura Salarial</span></div>
+        <div class="gloss-def">Ponto médio da faixa salarial definida para a posição na estrutura de cargos e salários da empresa. Representa o valor de mercado de referência para a função.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Compa-Ratio <span class="g-badge">Posicionamento</span></div>
+        <div class="gloss-def">Indicador que posiciona o salário em relação ao midpoint da faixa. Calculado como <code>Salário Base ÷ Midpoint × 100</code>. Abaixo de 80% indica posicionamento baixo (Lagging); entre 80–120% é considerado adequado (Match); acima de 120% indica acima do topo da faixa (Leading).</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Bônus Target <span class="g-badge">Variável</span></div>
+        <div class="gloss-def">Remuneração variável anual calculada como múltiplo do salário base. Exemplo: 3× equivale a 3 salários mensais pagos ao atingir 100% das metas (PLR ou ILP dependendo da política da empresa).</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Benefícios (VR + VA) <span class="g-badge">Indireto</span></div>
+        <div class="gloss-def">Soma mensal de Vale-Refeição e Vale-Alimentação. Entra na base de cálculo dos encargos patronais conforme legislação vigente.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Fator de Encargos <span class="g-badge">Patronal</span></div>
+        <div class="gloss-def">Multiplicador que representa o custo patronal total sobre a folha. O valor padrão de <code>1.49</code> reflete aproximadamente: FGTS (8%), INSS Patronal (~20%), RAT/SAT, Sistema S e outros encargos. Pode variar conforme regime tributário e perfil da empresa.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Custo Total (Empresa) <span class="g-badge">Orçamento</span></div>
+        <div class="gloss-def">Soma de todos os custos do período: Salário × meses + 13º proporcional + Férias (1/3 constitucional) + Bônus Target + Benefícios + Encargos Patronais. É o valor real que impacta o orçamento de pessoas.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Delta (Impacto Orçamentário) <span class="g-badge">Comparativo</span></div>
+        <div class="gloss-def">Diferença de custo total entre o Cenário B (proposto) e o Cenário A (atual). Representa o impacto incremental no budget de pessoas no período analisado.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Threshold de Escalonamento <span class="g-badge">Alerta</span></div>
+        <div class="gloss-def">Percentual de aumento que, quando superado, aciona o alerta de escalonamento. Recomenda-se avaliar propostas acima deste limite em duas etapas (faseamento) para diluição do impacto financeiro e adequação à política salarial.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Mediana dos Pares <span class="g-badge">Equidade</span></div>
+        <div class="gloss-def">Valor central da distribuição salarial dos colaboradores em posições equivalentes. Utilizado para análise de equidade interna. A mediana é menos sensível a outliers do que a média.</div>
+      </div>
+      <div class="gloss-item">
+        <div class="gloss-term">Projeção de Período <span class="g-badge">Configuração</span></div>
+        <div class="gloss-def">Ajusta todos os cálculos para o número de meses selecionado (1 a 12). Útil para calcular o custo de admissões mid-year ou avaliar impacto parcial de uma promoção.</div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        // --- STATE & CONFIG ---
-        const state = { viewMode: '1', months: 12, dataA: {}, dataB: {}, peersData: [] };
-        let mainChart = null;
+<!-- ADV MODAL -->
+<div id="advPanel" onclick="if(event.target===this)closeAdv()">
+  <div class="adv-modal">
+    <div class="adv-head">
+      <div class="adv-h3"><i class="fa-solid fa-sliders"></i> Configurações</div>
+      <button class="btn-close" onclick="closeAdv()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="adv-body">
+      <div>
+        <div class="adv-sec-lbl">Parâmetros Financeiros</div>
+        <div class="adv-grid2">
+          <div class="f">
+            <label>Fator de Encargos</label>
+            <input type="number" id="advFactor" class="inp mono" value="1.49" step="0.01">
+            <p class="adv-hint">Ex: 1.49 = 49% sobre a base patronal.</p>
+          </div>
+          <div class="f">
+            <label>Câmbio Dólar (R$)</label>
+            <input type="number" id="advExchange" class="inp mono" value="5.50" step="0.01">
+            <p class="adv-hint">Conversão para USD no detalhamento.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="adv-sec-lbl">Alerta de Escalonamento</div>
+        <div class="f" style="max-width:200px">
+          <label>Threshold de aumento (%)</label>
+          <input type="number" id="advThreshold" class="inp mono" value="30" step="1" min="1" max="100">
+          <p class="adv-hint">Dispara alerta quando o aumento superar este percentual.</p>
+        </div>
+      </div>
+      <div>
+        <div class="adv-sec-lbl">Rótulos dos Cenários</div>
+        <div class="adv-grid2">
+          <div class="f">
+            <label>Cenário A</label>
+            <input type="text" id="advNameA" class="inp" value="Atual" maxlength="20">
+          </div>
+          <div class="f">
+            <label>Cenário B</label>
+            <input type="text" id="advNameB" class="inp" value="Futuro" maxlength="20">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // --- DOM HELPERS ---
-        const setHtml = (id, html) => { const el = document.getElementById(id); if(el) el.innerHTML = html; };
-        const setText = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-        const setStyle = (id, prop, val) => { const el = document.getElementById(id); if(el) el.style[prop] = val; };
-        const showEl = (id, show) => { const el = document.getElementById(id); if(el) el.classList.toggle('hidden', !show); };
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tb-brand">
+    <div class="tb-brand-icon"><i class="fa-solid fa-chart-column"></i></div>
+    <div>
+      <div class="tb-brand-name">Compensation<br>Analysis</div>
+    </div>
+  </div>
 
-        // --- FORMATTERS ---
-        const fmt = (v) => (v||0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
-        const fmtUsd = (v) => {
-            const ex = parseFloat(document.getElementById('advExchange').value) || 5.50;
-            return (v/ex).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
-        };
-        
-        // Block span for large KPI cards
-        const fmtDual = (v) => {
-            if(!v) return '-';
-            const sign = v < 0 ? '-' : (v > 0 && typeof v === 'number' && document.getElementById('compDeltaVal').innerHTML.includes('+') ? '+' : '');
-            return `${fmt(v)}<span class="block text-[11px] text-white/70 font-medium mt-1 tracking-wide" style="color: inherit; opacity: 0.7;">US$ ${fmtUsd(Math.abs(v)).replace('$', '')}</span>`;
-        };
-        
-        // Inline span for Tables
-        const fmtDualInline = (v) => v > 0 ? `${fmt(v)}<br><span class="text-[9.5px] text-slate-400 font-normal tracking-wide">${fmtUsd(v)}</span>` : '-';
+  <div class="tb-seg">
+    <span class="tb-seg-lbl">Visão</span>
+    <select id="viewMode" class="tc-select" onchange="changeView()">
+      <option value="1">Análise Atual</option>
+      <option value="2">Análise Comparativa</option>
+      <option value="3">Comparativa + Equilíbrio Interno</option>
+    </select>
+  </div>
 
-        const parseBrCurrency = (value) => {
-            if (!value) return 0;
-            let raw = value.toString().replace(/\D/g, "");
-            return raw === "" ? 0 : parseFloat(raw) / 100;
-        };
-        const formatCurrencyInput = (value) => {
-            let num = value.replace(/\D/g, "");
-            if (num === "") return "";
-            return (parseFloat(num) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        };
+  <div class="tb-seg">
+    <span class="tb-seg-lbl">Projeção</span>
+    <div class="proj-ctrl">
+      <input type="range" id="projMonths" class="proj-slider" min="1" max="12" value="12">
+      <span class="proj-badge" id="projBadge">12m</span>
+    </div>
+  </div>
 
-        // --- CORE ---
-        function initApp() {
-            document.getElementById('appContainer').classList.remove('opacity-0');
-            loadState();
-            addListeners();
-            initCharts();
-            changeViewMode();
-            calculateAll();
-        }
+  <div class="tb-spacer"></div>
+  <div class="tb-actions">
+    <button class="tbtn" onclick="openGloss()"><i class="fa-regular fa-circle-question"></i> Glossário</button>
+    <button class="tbtn blue-btn" onclick="openAdv()"><i class="fa-solid fa-sliders"></i> Configurações</button>
+    <button class="tbtn" onclick="resetAll()"><i class="fa-solid fa-eraser"></i> Limpar</button>
+  </div>
+</div>
 
-        function initCharts() {
-            const ctxMain = document.getElementById('mainChart').getContext('2d');
-            if(mainChart) mainChart.destroy(); 
-            mainChart = new Chart(ctxMain, { type: 'bar', data: { datasets: [] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { font: { family: 'Inter' } } } }, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, border: { dash: [4, 4] } } } } });
-        }
+<!-- APP -->
+<div id="app">
+  <aside id="sidebar">
+    <div class="sb-body">
 
-        function addListeners() {
-            const triggers = ['.input-calc', '#advFactor', '#advExchange'];
-            // Include peer inputs 1 to 5 e notas de performance
-            for(let i=1; i<=5; i++) {
-                triggers.push(`#peer${i}`);
-                triggers.push(`#perf${i}`);
-            }
+      <div class="sc-block" id="scenA">
+        <div class="sc-head">
+          <div class="sc-dot a"></div>
+          <div class="sc-lbl a" id="lblScA">Cenário A · Atual</div>
+        </div>
+        <div class="sc-fields">
+          <div class="f"><label>Salário Base <span class="tooltip"><i class="fa-regular fa-circle-question help-ico" onclick="openGloss()"></i></span></label><input type="text" id="salaryA" class="inp mono" placeholder="R$ 0,00"></div>
+          <div class="f"><label>Midpoint</label><input type="text" id="midpointA" class="inp mono" placeholder="R$ 0,00"></div>
+          <div class="f">
+            <label>Bônus Target (salários)</label>
+            <div class="bonus-row">
+              <input type="number" id="bonusMultiA" class="inp bm hi-a mono" placeholder="0.0" step="0.1">
+              <input type="text" id="bonusValA" class="inp mono" readonly placeholder="Calculado">
+            </div>
+          </div>
+          <div class="f"><label>Benefícios (VR + VA)</label><input type="text" id="flexBenA" class="inp mono" placeholder="R$ 0,00"></div>
+        </div>
+      </div>
 
-            document.querySelectorAll(triggers.join(',')).forEach(i => i.addEventListener('input', () => { calculateAll(); saveState(); }));
-            
-            document.querySelectorAll('.fmt-curr').forEach(i => {
-                i.addEventListener('input', (e) => {
-                    e.target.value = formatCurrencyInput(e.target.value);
-                    calculateAll();
-                    saveState();
-                });
-            });
+      <div class="sc-block hidden" id="scenB">
+        <div class="sc-head">
+          <div class="sc-dot b"></div>
+          <div class="sc-lbl b" id="lblScB">Cenário B · Futuro</div>
+        </div>
+        <div class="sc-fields">
+          <div class="f"><label>Novo Salário Base</label><input type="text" id="salaryB" class="inp mono" placeholder="R$ 0,00"></div>
+          <div class="f"><label>Midpoint</label><input type="text" id="midpointB" class="inp mono" placeholder="R$ 0,00"></div>
+          <div class="f">
+            <label>Bônus Target (salários)</label>
+            <div class="bonus-row">
+              <input type="number" id="bonusMultiB" class="inp bm hi-b mono" placeholder="0.0" step="0.1">
+              <input type="text" id="bonusValB" class="inp mono" readonly placeholder="Calculado">
+            </div>
+          </div>
+          <div class="f"><label>Benefícios (VR + VA)</label><input type="text" id="flexBenB" class="inp mono" placeholder="R$ 0,00"></div>
+        </div>
+      </div>
 
-            document.getElementById('projMonths').addEventListener('input', (e) => {
-                state.months = parseInt(e.target.value);
-                setText('projMonthsDisplay', `${state.months} Meses`);
-                document.querySelectorAll('.lbl-annual-cost').forEach(el => el.innerHTML = `<i class="fa-solid fa-coins text-indigo-400"></i> Custo Total (${state.months}m)`);
-                calculateAll(); saveState();
-            });
-        }
+      <div class="sc-block hidden" id="peersSection">
+        <div class="sc-head">
+          <div class="sc-dot p"></div>
+          <div class="sc-lbl p">Equilíbrio Interno · Pares</div>
+        </div>
+        <div class="sc-fields">
+          <div class="f" style="margin-bottom:8px"><label>Salário base e nota de performance</label></div>
+          <div id="peersInputs"></div>
+        </div>
+      </div>
 
-        function saveState() {
-            const inputs = {};
-            document.querySelectorAll('input, select').forEach(el => {
-                if(el.id) inputs[el.id] = el.type === 'checkbox' ? el.checked : el.value;
-            });
-            localStorage.setItem('vini_comp_calc_v26', JSON.stringify(inputs));
-            
-            const ind = document.getElementById('saveIndicator');
-            ind.style.opacity = '1';
-            setTimeout(() => { ind.style.opacity = '0'; }, 1500);
-        }
+    </div>
+  </aside>
 
-        function loadState() {
-            const saved = localStorage.getItem('vini_comp_calc_v26');
-            if (!saved) return;
-            try {
-                const inputs = JSON.parse(saved);
-                Object.keys(inputs).forEach(key => {
-                    const el = document.getElementById(key);
-                    if(el) {
-                        if(el.type === 'checkbox') el.checked = inputs[key];
-                        else el.value = inputs[key];
-                    }
-                });
-                state.viewMode = document.getElementById('viewMode').value;
-                if(inputs.projMonths) {
-                    state.months = parseInt(inputs.projMonths);
-                    setText('projMonthsDisplay', `${state.months} Meses`);
-                }
-            } catch(e) { console.error('Load failed', e); }
-        }
+  <main id="main">
+    <div class="mi">
 
-        function changeViewMode() {
-            state.viewMode = document.getElementById('viewMode').value;
-            
-            showEl('scenarioB', state.viewMode === '2' || state.viewMode === '3');
-            showEl('comparativeView', state.viewMode === '2' || state.viewMode === '3');
-            showEl('standardView', state.viewMode === '1');
-            showEl('equityInputs', state.viewMode === '3');
-            showEl('equityView', state.viewMode === '3');
-            
-            calculateAll();
-            saveState();
-        }
+      <!-- Insight -->
+      <div class="insight-card blue" id="insightCard">
+        <div class="i-icon blue" id="insightIcon"><i class="fa-solid fa-circle-info"></i></div>
+        <div>
+          <div class="i-title" id="insightTitle">Aguardando dados</div>
+          <div class="i-body" id="insightBody">Preencha os campos na barra lateral para visualizar a análise de compensação.</div>
+        </div>
+      </div>
 
-        function parseVal(id) {
-            const el = document.getElementById(id);
-            return parseBrCurrency(el ? el.value : '');
-        }
+      <!-- V1 -->
+      <div id="v1">
+        <div class="kpi-strip">
+          <div class="kpi-card blue">
+            <div class="kpi-lbl"><i class="fa-solid fa-coins"></i> <span id="lblCostKpi">Custo Total · 12m</span></div>
+            <div class="kpi-num" id="kpiTotal">—</div>
+            <div class="kpi-usd" id="kpiTotalUsd">—</div>
+            <div class="kpi-foot">
+              <span class="kf-lbl">Fixo Mensal</span>
+              <span class="kf-val" id="kpiMonthly">—</span>
+            </div>
+          </div>
+          <div class="kpi-card purple">
+            <div class="kpi-lbl"><i class="fa-solid fa-bullseye"></i> Compa-Ratio</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div class="kpi-num" id="kpiCR">—</div>
+              <span class="cr-badge" id="kpiCRBadge">—</span>
+            </div>
+            <div class="cr-wrap">
+              <div class="cr-track">
+                <div class="cr-zones"><div class="cr-z1"></div><div class="cr-z2"></div><div class="cr-z3"></div></div>
+                <div class="cr-ptr" id="crPtr" style="left:0%"></div>
+              </div>
+              <div class="cr-ticks">
+                <span style="margin-left:37%">80%</span>
+                <span style="margin-left:3%">100%</span>
+                <span style="margin-left:5%">120%</span>
+              </div>
+            </div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-lbl"><i class="fa-solid fa-building-columns"></i> Encargos Patronais</div>
+            <div class="kpi-num" id="kpiCharges">—</div>
+            <div class="kpi-usd" id="kpiChargesPct">—</div>
+            <div class="kpi-foot">
+              <span class="kf-lbl">Fator</span>
+              <span class="kf-val" id="kpiFactorLbl">1.49×</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        // --- CALCULATION LOGIC ---
-        function calculateScenario(prefix) {
-            const salary = parseVal(`salary${prefix}`);
-            const bonusMulti = parseFloat(document.getElementById(`bonusMulti${prefix}`)?.value) || 0;
-            const flexBen = parseVal(`flexBen${prefix}`);
-            
-            let midpoint = parseVal(`midpoint${prefix}`);
-            if (prefix === 'B' && midpoint === 0) midpoint = parseVal('midpointA');
-            
-            const factor = parseFloat(document.getElementById('advFactor').value) || 1.49;
-            
-            const bonusVal = salary * bonusMulti;
-            const db = document.getElementById(`bonusVal${prefix}`);
-            if(db) db.value = fmt(bonusVal);
+      <!-- V2/3 -->
+      <div id="v23" class="hidden section">
+        <div class="delta-bar">
+          <div>
+            <div class="dl-label">Impacto Orçamentário · Delta</div>
+            <div class="dl-val" id="deltaVal">—</div>
+            <div class="dl-usd" id="deltaUsd">—</div>
+          </div>
+          <span class="dl-pill dp-zero" id="deltaPill">—</span>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-card">
+            <div class="comp-tag ct-a" id="compTagA">Cenário A</div>
+            <div class="comp-val" id="compTotalA">—</div>
+            <div class="comp-sub">Custo Total</div>
+            <div class="comp-cr">Compa-Ratio: <strong id="compCRA">—</strong></div>
+          </div>
+          <div class="comp-card b">
+            <div class="comp-tag ct-b" id="compTagB">Cenário B</div>
+            <div class="comp-val" id="compTotalB">—</div>
+            <div class="comp-sub">Custo Total</div>
+            <div class="comp-cr">Compa-Ratio: <strong id="compCRB">—</strong></div>
+          </div>
+        </div>
+        <div class="prop-strip">
+          <div class="prop-grid">
+            <div class="prop-col">
+              <label id="propLblA">Atual</label>
+              <div class="prop-sal" id="propSalA">—</div>
+              <div class="prop-cr-sub" id="propCrA">Compa-Ratio: —</div>
+            </div>
+            <div class="prop-arr"><i class="fa-solid fa-arrow-right"></i></div>
+            <div class="prop-col">
+              <label id="propLblB">Futuro</label>
+              <div class="prop-sal" id="propSalB">—</div>
+              <div class="prop-cr-sub" id="propCrB">Compa-Ratio: —</div>
+            </div>
+            <div class="prop-inc">
+              <label>Aumento Base</label>
+              <div class="prop-inc-val" id="propIncVal">—</div>
+              <span class="prop-inc-pct" id="propIncPct">+0%</span>
+            </div>
+          </div>
+          <div id="escAlert" class="esc-alert hidden">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span id="escAlertText">Aumento supera o threshold configurado. Avalie proposta com escalonamento.</span>
+          </div>
+        </div>
+      </div>
 
-            const monthlyBen = flexBen;
+      <!-- V3 equity -->
+      <div id="v3eq" class="hidden section">
+        <div class="sec-head"><div class="sec-title"><i class="fa-solid fa-users"></i> Equilíbrio Interno</div></div>
+        <div class="eq-kpis">
+          <div class="eq-kpi"><label>Mediana Base · Pares</label><div class="eq-val" id="eqMedian">—</div><div class="eq-note">Calculado dos inputs</div></div>
+          <div class="eq-kpi"><label>Proposta · Cenário B</label><div class="eq-val" id="eqPropB">—</div><div class="eq-note" id="eqCrB">Compa-Ratio: —</div></div>
+          <div class="eq-kpi"><label>Proposta vs Mediana</label><div class="eq-val" id="eqDiff">—</div><div class="eq-note" id="eqDiffNote">—</div></div>
+        </div>
+        <div class="eq-tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Colaborador</th><th class="r">Salário Base</th><th class="r">Bônus Target (ano)</th>
+              <th class="r">Benefícios (ano)</th><th class="r">Total Comp (ano)</th><th class="r">Δ vs Proposta</th>
+            </tr></thead>
+            <tbody id="eqTbody"></tbody>
+          </table>
+          <div class="eq-tbl-foot">Total Comp dos pares calculado simulando o Bônus Target e Benefícios do Cenário B.</div>
+        </div>
+      </div>
 
-            // Base Components (12 months standardized)
-            const monthly13 = salary / 12;
-            const monthlyVacPlus = (salary / 3) / 12;
-            
-            const M = state.months;
-            const projSalary = salary * M;
-            const proj13 = monthly13 * M;
-            const projVacPlus = monthlyVacPlus * M;
-            const projBonus = (bonusVal / 12) * M;
-            const projBen = monthlyBen * M;
+      <!-- Detail Table -->
+      <div class="tbl-wrap">
+        <div class="tbl-bar">
+          <div class="tbl-ttl"><i class="fa-solid fa-table-list"></i> Detalhamento Financeiro</div>
+          <button class="btn-export" onclick="exportXls()"><i class="fa-solid fa-file-excel" style="color:var(--green)"></i> Exportar .XLS</button>
+        </div>
+        <div class="ass-strip" id="assStrip"></div>
+        <div style="overflow-x:auto"><table><thead id="dtHead"></thead><tbody id="dtBody"></tbody></table></div>
+        <div class="tbl-foot">
+          <strong>USD</strong> à taxa de R$ <span id="lblExRate">5,50</span> &nbsp;·&nbsp;
+          <strong>Encargos</strong> pelo fator <span id="lblFactor">1.49</span>× sobre salário, 13º, férias e benefícios.
+        </div>
+      </div>
 
-            // INCORPORAÇÃO DOS BENEFÍCIOS NA BASE DO ENCARGO
-            const annualBaseForFactor = projSalary + proj13 + projVacPlus + projBen;
-            const projCharges = annualBaseForFactor * (factor - 1.0); 
-            
-            const subtotalPackage = projSalary + proj13 + projVacPlus + projBonus + projBen;
-            const totalCost = subtotalPackage + projCharges;
-            
-            const monthlyAvgCost = totalCost / M;
-            const monthlyFixedCash = salary + monthlyBen; 
-            const compaRatio = midpoint > 0 ? salary / midpoint : 0;
+      <!-- Chart -->
+      <div class="chart-wrap">
+        <div class="chart-title"><i class="fa-solid fa-chart-column"></i> Composição do Custo Anual</div>
+        <div style="height:230px"><canvas id="mc"></canvas></div>
+      </div>
 
-            return {
-                salary, midpoint, bonusVal, bonusMulti, totalCost, monthlyAvgCost, monthlyFixedCash, compaRatio, 
-                projSalary, proj13, projVacPlus, projBonus, projBen, subtotalPackage, projCharges, monthlyBen
-            };
-        }
+      <div class="credit">desenvolvido por <span>Vinicius Carlos</span></div>
+    </div>
+  </main>
+</div>
 
-        function calculatePeers() {
-            state.peersData = [];
-            const factor = parseFloat(document.getElementById('advFactor').value) || 1.49;
-            const M = state.months;
-            const dB = state.dataB;
-            const dA = state.dataA;
+<script>
+// peers
+(()=>{let h='';for(let i=1;i<=5;i++)h+=`<div class="peer-row"><span class="peer-n">Par ${i}</span><input type="text" id="peer${i}" class="inp peer-s mono" placeholder="R$ 0,00"><input type="text" id="perf${i}" class="inp peer-p" placeholder="Nota"></div>`;document.getElementById('peersInputs').innerHTML=h;})();
 
-            for(let i=1; i<=5; i++) {
-                const val = parseVal(`peer${i}`);
-                const perf = document.getElementById(`perf${i}`)?.value || '';
-                
-                if(val > 0) {
-                    // Calculo de CR do Par
-                    const midpoint = dB.midpoint > 0 ? dB.midpoint : (dA.midpoint > 0 ? dA.midpoint : 0);
-                    const cr = midpoint > 0 ? val / midpoint : 0;
+let chart=null,months=12;
+window.addEventListener('load',()=>{
+  chart=new Chart(document.getElementById('mc').getContext('2d'),{
+    type:'bar',data:{datasets:[]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{font:{family:'Inter',size:11},color:'#6E6E73',boxWidth:12,boxHeight:12}}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{font:{family:'Inter',size:9},color:'#AEAEB2'}},
+        y:{stacked:true,border:{dash:[3,3]},grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Inter',size:9},color:'#AEAEB2'}}
+      }
+    }
+  });
+  addListeners();loadState();changeView();recalc();
+});
 
-                    // Maçã com Maçã: uses Scenario B targets and benefits for the peer base salary
-                    const bonusVal = val * (dB.bonusMulti || 0);
-                    const projSalary = val * M;
-                    const proj13 = (val / 12) * M;
-                    const projVacPlus = ((val / 3) / 12) * M;
-                    const projBonus = (bonusVal / 12) * M;
-                    const projBen = dB.monthlyBen * M;
-                    
-                    // INCORPORAÇÃO DOS BENEFÍCIOS NA BASE DO ENCARGO DO PAR
-                    const annualBaseForFactor = projSalary + proj13 + projVacPlus + projBen;
-                    const projCharges = annualBaseForFactor * (factor - 1.0);
-                    const totalCost = projSalary + proj13 + projVacPlus + projBonus + projBen + projCharges;
+const brl=v=>(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const usd=v=>{const ex=+document.getElementById('advExchange').value||5.5;return(v/ex).toLocaleString('en-US',{style:'currency',currency:'USD'});};
+const parseBrl=s=>s?parseFloat(s.replace(/\D/g,''))/100||0:0;
+const fmtI=s=>{const n=s.replace(/\D/g,'');return n?(parseFloat(n)/100).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):''};
+const dual=v=>v?`${brl(v)}<span class="td-usd">${usd(v)}</span>`:'—';
+const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+const setH=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v};
+const show=id=>document.getElementById(id)?.classList.remove('hidden');
+const hide=id=>document.getElementById(id)?.classList.add('hidden');
 
-                    state.peersData.push({
-                        label: `Par ${i}`,
-                        perf: perf,
-                        cr: cr,
-                        salary: val,
-                        projBonus: projBonus,
-                        projBen: projBen,
-                        totalCost: totalCost
-                    });
-                }
-            }
-            state.peersData.sort((a,b) => a.salary - b.salary);
-        }
+function addListeners(){
+  ['salaryA','midpointA','flexBenA','salaryB','midpointB','flexBenB'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',e=>{e.target.value=fmtI(e.target.value);go();});
+  });
+  for(let i=1;i<=5;i++){
+    document.getElementById('peer'+i)?.addEventListener('input',e=>{e.target.value=fmtI(e.target.value);go();});
+    document.getElementById('perf'+i)?.addEventListener('input',go);
+  }
+  ['bonusMultiA','bonusMultiB','advFactor','advExchange','advThreshold','advNameA','advNameB'].forEach(id=>{
+    document.getElementById(id)?.addEventListener('input',go);
+  });
+  document.getElementById('projMonths').addEventListener('input',e=>{
+    months=+e.target.value;
+    document.getElementById('projBadge').textContent=months+'m';
+    go();
+  });
+}
+function go(){recalc();save();}
 
-        function calculateAll() {
-            state.dataA = calculateScenario('A');
-            if (state.viewMode === '2' || state.viewMode === '3') {
-                state.dataB = calculateScenario('B');
-            }
-            if (state.viewMode === '3') calculatePeers();
-            
-            updateUI();
-        }
+function calc(p){
+  const sal=parseBrl(document.getElementById('salary'+p)?.value);
+  let mid=parseBrl(document.getElementById('midpoint'+p)?.value);
+  if(p==='B'&&mid===0)mid=parseBrl(document.getElementById('midpointA')?.value);
+  const bm=+(document.getElementById('bonusMulti'+p)?.value)||0;
+  const ben=parseBrl(document.getElementById('flexBen'+p)?.value);
+  const fac=+(document.getElementById('advFactor')?.value)||1.49;
+  const M=months;
+  const bv=sal*bm;
+  const bve=document.getElementById('bonusVal'+p);
+  if(bve)bve.value=sal>0?brl(bv):'';
+  const pS=sal*M,p1=(sal/12)*M,pV=((sal/3)/12)*M,pB=(bv/12)*M,pBen=ben*M;
+  const pC=(pS+p1+pV+pBen)*(fac-1);
+  const sub=pS+p1+pV+pB+pBen;
+  const tot=sub+pC;
+  return{sal,mid,bm,bv,ben,pS,p1,pV,pB,pBen,pC,sub,tot,cr:mid>0?sal/mid:0,mo:sal+ben};
+}
 
-        function updateUI() {
-            const dA = state.dataA; const dB = state.dataB;
-            
-            // Labels Sync
-            const factor = document.getElementById('advFactor').value || '1.49';
-            const exRate = document.getElementById('advExchange').value || '5.50';
-            setText('lblFactor', factor);
-            setText('lblExRate', exRate);
+function calcPeers(dB){
+  const fac=+(document.getElementById('advFactor')?.value)||1.49;
+  const M=months;
+  return Array.from({length:5},(_,i)=>{
+    const v=parseBrl(document.getElementById('peer'+(i+1))?.value);
+    const pf=document.getElementById('perf'+(i+1))?.value||'';
+    if(!v)return null;
+    const bv=v*(dB.bm||0);
+    const pS=v*M,p1=(v/12)*M,pV=((v/3)/12)*M,pB=(bv/12)*M,pBen=dB.ben*M;
+    const pC=(pS+p1+pV+pBen)*(fac-1);
+    const tot=pS+p1+pV+pB+pBen+pC;
+    return{label:'Par '+(i+1),perf:pf,sal:v,pB,pBen,tot,cr:dB.mid>0?v/dB.mid:0};
+  }).filter(Boolean).sort((a,b)=>a.sal-b.sal);
+}
 
-            // View 1 UI
-            setHtml('kpiTotalA', fmtDual(dA.totalCost));
-            setHtml('kpiMonthlyA', fmtDual(dA.monthlyFixedCash));
-            
-            const crPct = Math.round(dA.compaRatio * 100);
-            setText('kpiCRA', crPct + '%');
-            let pointerLeft = Math.max(0, Math.min(100, crPct / 2));
-            setStyle('kpiCRPointerA', 'left', pointerLeft + '%');
-            setText('kpiCRLabelA', crPct < 80 ? 'Lagging' : (crPct > 120 ? 'Leading' : 'Match'));
+function med(arr,k){
+  const m=Math.floor(arr.length/2);
+  return arr.length%2!==0?arr[m][k]:(arr[m-1][k]+arr[m][k])/2;
+}
 
-            const insightEl = document.getElementById('insightText');
-            insightEl.innerHTML = `<p>A empresa investe um Total Anualizado de <strong class="text-indigo-700">${fmt(dA.totalCost)}</strong> para esta posição, sendo <strong class="text-slate-700">${fmt(dA.projCharges)}</strong> destinado a encargos legais/sociais.</p>`;
+function buildInsight(vm,dA,dB,peers){
+  const thr=+(document.getElementById('advThreshold')?.value)||30;
+  const nB=document.getElementById('advNameB')?.value||'Futuro';
+  if(!dA.sal){
+    setH('insightCard','<div class="insight-card blue" id="insightCard">');
+    document.getElementById('insightCard').className='insight-card blue';
+    setH('insightIcon','<i class="fa-solid fa-circle-info"></i>');
+    document.getElementById('insightIcon').className='i-icon blue';
+    setT('insightTitle','Aguardando dados');
+    setH('insightBody','Preencha os campos na barra lateral para iniciar a análise.');
+    return;
+  }
+  const crA=Math.round(dA.cr*100);
+  const chPct=dA.tot>0?Math.round(dA.pC/dA.tot*100):0;
+  let cls='blue',ico='<i class="fa-solid fa-circle-check"></i>',title='',body='';
 
-            // View 2 & 3 UI
-            if (state.viewMode === '2' || state.viewMode === '3') {
-                const crPctA = Math.round(dA.compaRatio * 100);
-                const crPctB = Math.round(dB.compaRatio * 100);
-                
-                // Using Dual Currency in Comparativa
-                setHtml('compAnnualA', fmtDual(dA.totalCost));
-                setHtml('compAnnualB', fmtDual(dB.totalCost));
-                
-                // CR Additions in View 2/3
-                setText('compCRA', crPctA + '%');
-                setText('compCRB', crPctB + '%');
-                setText('propCRA', crPctA + '%');
-                setText('propCRB', crPctB + '%');
-                
-                const delta = dB.totalCost - dA.totalCost;
-                setHtml('compDeltaVal', fmtDual(delta));
-                
-                setHtml('propSalaryA', fmtDual(dA.salary));
-                setHtml('propSalaryB', fmtDual(dB.salary));
-                
-                const inc = dB.salary - dA.salary;
-                const incPct = dA.salary > 0 ? (inc / dA.salary) * 100 : 0;
-                setHtml('propIncreaseVal', fmtDual(inc));
-                setText('propIncreasePct', (incPct > 0 ? '+' : '') + incPct.toFixed(1) + '%');
+  if(vm==='1'){
+    body=`A empresa investe <strong>${brl(dA.tot)}</strong> no período de ${months}m. Os encargos representam <strong>${chPct}%</strong> do custo total (${brl(dA.pC)}).`;
+    if(dA.cr>0){
+      if(crA<80){cls='amber';ico='<i class="fa-solid fa-triangle-exclamation"></i>';title='Atenção: Posicionamento Baixo';body+=` <br><br>Compa-Ratio de <strong class="c-amber">${crA}%</strong> — salário abaixo do midpoint. Risco de retenção e inequidade interna.`;}
+      else if(crA>120){cls='blue';ico='<i class="fa-solid fa-chart-line"></i>';title='Posicionamento Acima do Range';body+=` <br><br>Compa-Ratio de <strong>${crA}%</strong> — acima do topo da faixa. Avalie alinhamento com política salarial.`;}
+      else{cls='green';ico='<i class="fa-solid fa-circle-check"></i>';title='Posicionamento Adequado';body+=` <br><br>Compa-Ratio de <strong class="c-green">${crA}%</strong> — dentro do range da posição.`;}
+    }else{title='Análise de Custo';cls='blue';ico='<i class="fa-solid fa-coins"></i>';}
+  } else {
+    if(!dB||!dB.sal){
+      cls='blue';ico='<i class="fa-solid fa-circle-info"></i>';
+      title='Preencha o Cenário B';body='Insira os dados do cenário proposto para ativar a análise comparativa.';
+    }else{
+      const incP=dA.sal>0?(dB.sal-dA.sal)/dA.sal*100:0;
+      const delta=dB.tot-dA.tot;
+      const crB=Math.round(dB.cr*100);
+      title='Análise Comparativa';
+      body=`Aumento de <strong class="${incP>thr?'c-amber':'c-green'}">${incP.toFixed(1)}%</strong> no salário base, com impacto de <strong>${brl(delta)}</strong> no orçamento do período.`;
+      if(dB.cr>0){
+        body+=` Compa-Ratio passa de <strong>${crA}%</strong> para <strong class="${crB<80?'c-amber':crB>120?'c-blue':'c-green'}">${crB}%</strong>${crB<80?' — ainda abaixo do midpoint':crB>120?' — acima do topo da faixa':' — dentro do range'}.`;
+      }
+      if(incP>thr){cls='amber';ico='<i class="fa-solid fa-triangle-exclamation"></i>';title='Alerta: Aumento Expressivo';body+=`<br><br>Aumento superior ao threshold de ${thr}%. Avalie proposta com escalonamento.`;}
+      else if(vm==='3'&&peers.length>0){
+        const mSal=med(peers,'sal');
+        const d=((dB.sal/mSal)-1)*100;
+        body+=`<br><br>Em relação à mediana dos pares (${brl(mSal)}): proposta <strong class="${Math.abs(d)<10?'c-green':d>0?'c-amber':'c-red'}">${d>0?'+':''}${d.toFixed(1)}%</strong>.`;
+        if(Math.abs(d)<10){title='Proposta Alinhada com Equilíbrio Interno';cls='green';ico='<i class="fa-solid fa-circle-check"></i>';}
+        else if(d>10){title='Proposta Acima da Mediana Interna';cls='amber';ico='<i class="fa-solid fa-arrow-trend-up"></i>';}
+        else{title='Proposta Abaixo da Mediana Interna';cls='amber';ico='<i class="fa-solid fa-arrow-trend-down"></i>';}
+      }else{cls='blue';ico='<i class="fa-solid fa-scale-balanced"></i>';}
+    }
+  }
+  document.getElementById('insightCard').className='insight-card '+cls;
+  document.getElementById('insightIcon').className='i-icon '+cls;
+  setH('insightIcon',ico);setT('insightTitle',title);setH('insightBody',body);
+}
 
-                // Lógica de Alerta de Escalonamento (>30%)
-                showEl('escalonamentoAlert', incPct > 30);
-            }
+function recalc(){
+  const vm=document.getElementById('viewMode').value;
+  const nA=document.getElementById('advNameA')?.value||'Atual';
+  const nB=document.getElementById('advNameB')?.value||'Futuro';
+  const dA=calc('A');
+  const dB=(vm==='2'||vm==='3')?calc('B'):null;
+  const peers=vm==='3'?calcPeers(dB||{bm:0,ben:0,mid:0}):[];
 
-            // View 3 (Equilíbrio Interno)
-            if (state.viewMode === '3') {
-                const crPctB = Math.round(dB.compaRatio * 100);
-                setHtml('eqPropB', fmtDual(dB.salary));
-                setText('eqCrbTxt', `Compa-Ratio: ${crPctB}%`);
-                
-                let medSalary = 0;
-                if(state.peersData.length > 0) {
-                    const mid = Math.floor(state.peersData.length / 2);
-                    medSalary = state.peersData.length % 2 !== 0 
-                                ? state.peersData[mid].salary 
-                                : (state.peersData[mid - 1].salary + state.peersData[mid].salary) / 2;
-                }
-                
-                setHtml('eqMedian', fmtDual(medSalary));
+  setT('lblScA','Cenário A · '+nA);setT('lblScB','Cenário B · '+nB);
+  setT('lblFactor',document.getElementById('advFactor')?.value||'1.49');
+  setT('lblExRate',document.getElementById('advExchange')?.value||'5.50');
+  setT('kpiFactorLbl',(document.getElementById('advFactor')?.value||'1.49')+'×');
+  setT('lblCostKpi','Custo Total · '+months+'m');
 
-                if(medSalary > 0 && dB.salary > 0) {
-                    const diffPct = ((dB.salary / medSalary) - 1) * 100;
-                    setText('eqPos', (diffPct > 0 ? '+' : '') + diffPct.toFixed(1) + '%');
-                    
-                    const insightEq = document.getElementById('eqInsight');
-                    if (diffPct > 10) {
-                        insightEq.innerHTML = '<span class="text-amber-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Proposta acima do equilíbrio.</span>';
-                    } else if (diffPct < -10) {
-                        insightEq.innerHTML = '<span class="text-rose-600 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Proposta abaixo do equilíbrio.</span>';
-                    } else {
-                        insightEq.innerHTML = '<span class="text-emerald-600 font-bold"><i class="fa-solid fa-check mr-1"></i> Proposta alinhada com pares.</span>';
-                    }
-                } else {
-                    setText('eqPos', '--');
-                    setText('eqInsight', 'Insira salários de pares.');
-                }
-            }
+  setT('kpiTotal',dA.tot>0?brl(dA.tot):'—');
+  setT('kpiTotalUsd',dA.tot>0?usd(dA.tot):'—');
+  setT('kpiMonthly',dA.mo>0?brl(dA.mo):'—');
 
-            // --- Assumptions Cards (Cenário Base) ---
-            const cardContainer = document.getElementById('assumptionsCards');
-            if (cardContainer) {
-                let cardsHTML = `
-                    <div class="bg-indigo-50/70 rounded-xl p-5 border border-indigo-100 shadow-sm">
-                        <div class="flex items-center gap-2 mb-3 text-indigo-900 font-extrabold text-xs uppercase tracking-wide">
-                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Cenário A (Atual)
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Salário Base</p>
-                                <p class="text-indigo-900 font-bold font-mono text-[15px]">${fmt(dA.salary)}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Target Bônus</p>
-                                <p class="text-indigo-900 font-bold font-mono text-[15px]">${dA.bonusMulti}x <span class="text-[11px] text-indigo-500 font-medium">(${fmt(dA.bonusVal)})</span></p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                if (state.viewMode === '2' || state.viewMode === '3') {
-                    cardsHTML += `
-                        <div class="bg-emerald-50/70 rounded-xl p-5 border border-emerald-100 shadow-sm">
-                            <div class="flex items-center gap-2 mb-3 text-emerald-900 font-extrabold text-xs uppercase tracking-wide">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Cenário B (Proposto)
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Salário Base</p>
-                                    <p class="text-emerald-900 font-bold font-mono text-[15px]">${fmt(dB.salary)}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Target Bônus</p>
-                                    <p class="text-emerald-900 font-bold font-mono text-[15px]">${dB.bonusMulti}x <span class="text-[11px] text-emerald-500 font-medium">(${fmt(dB.bonusVal)})</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-                cardContainer.innerHTML = cardsHTML;
-            }
+  const crA=Math.round(dA.cr*100);
+  setT('kpiCR',dA.cr>0?crA+'%':'—');
+  document.getElementById('crPtr').style.left=Math.max(0,Math.min(100,crA/2))+'%';
+  const badge=document.getElementById('kpiCRBadge');
+  badge.className='cr-badge';
+  if(dA.cr>0){
+    if(crA<80){badge.classList.add('crb-lag');badge.textContent='Lagging';}
+    else if(crA>120){badge.classList.add('crb-lead');badge.textContent='Leading';}
+    else{badge.classList.add('crb-match');badge.textContent='Match';}
+  }else badge.textContent='—';
 
-            renderEquityTable();
-            renderTable();
-            updateCharts();
-        }
+  setT('kpiCharges',dA.pC>0?brl(dA.pC):'—');
+  const chPct=dA.tot>0?Math.round(dA.pC/dA.tot*100):0;
+  setT('kpiChargesPct',dA.tot>0?chPct+'% do custo total':'—');
 
-        function renderEquityTable() {
-            const tbody = document.getElementById('equityTableBody');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            const dB = state.dataB;
+  if(dB){
+    const delta=dB.tot-dA.tot;
+    setT('deltaVal',brl(delta));setT('deltaUsd',usd(Math.abs(delta)));
+    const pill=document.getElementById('deltaPill');
+    pill.textContent=(delta>0?'+':'')+brl(delta);
+    pill.className='dl-pill '+(delta>0?'dp-pos':delta<0?'dp-neg':'dp-zero');
+    setT('compTagA','Cenário A · '+nA);setT('compTagB','Cenário B · '+nB);
+    setT('compTotalA',dA.tot>0?brl(dA.tot):'—');setT('compTotalB',dB.tot>0?brl(dB.tot):'—');
+    setT('compCRA',dA.cr>0?crA+'%':'—');setT('compCRB',dB.cr>0?Math.round(dB.cr*100)+'%':'—');
+    setT('propLblA',nA);setT('propLblB',nB);
+    setT('propSalA',dA.sal>0?brl(dA.sal):'—');setT('propSalB',dB.sal>0?brl(dB.sal):'—');
+    setT('propCrA','Compa-Ratio: '+(dA.cr>0?crA+'%':'—'));
+    setT('propCrB','Compa-Ratio: '+(dB.cr>0?Math.round(dB.cr*100)+'%':'—'));
+    const inc=dB.sal-dA.sal,incP=dA.sal>0?inc/dA.sal*100:0;
+    setT('propIncVal',dA.sal>0?brl(inc):'—');
+    setT('propIncPct',(incP>0?'+':'')+incP.toFixed(1)+'%');
+    const thr=+(document.getElementById('advThreshold')?.value)||30;
+    const esc=document.getElementById('escAlert');
+    if(incP>thr&&dA.sal>0&&dB.sal>0){esc.classList.remove('hidden');setT('escAlertText',`Aumento de ${incP.toFixed(1)}% supera o threshold de ${thr}%. Avalie escalonamento.`);}
+    else esc.classList.add('hidden');
+  }
 
-            if(state.peersData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400 font-medium">Nenhum par informado no menu lateral para análise de equilíbrio interno.</td></tr>';
-                return;
-            }
+  if(peers.length>0&&dB){
+    const mSal=med(peers,'sal'),mB=med(peers,'pB'),mBen=med(peers,'pBen'),mT=med(peers,'tot');
+    setT('eqMedian',mSal>0?brl(mSal):'—');setT('eqPropB',dB.sal>0?brl(dB.sal):'—');
+    setT('eqCrB','Compa-Ratio: '+(dB.cr>0?Math.round(dB.cr*100)+'%':'—'));
+    if(mSal>0&&dB.sal>0){
+      const d=((dB.sal/mSal)-1)*100;
+      setT('eqDiff',(d>0?'+':'')+d.toFixed(1)+'%');
+      const n=document.getElementById('eqDiffNote');
+      if(d>10)n.innerHTML='<span style="color:var(--amber)">Acima do equilíbrio</span>';
+      else if(d<-10)n.innerHTML='<span style="color:var(--red)">Abaixo do equilíbrio</span>';
+      else n.innerHTML='<span style="color:var(--green)">Alinhado com pares</span>';
+    }
+    let rows='';
+    peers.forEach(p=>{
+      const d=dB.tot>0&&p.tot>0?((dB.tot/p.tot)-1)*100:null;
+      const dH=d!==null?`<span style="font-weight:600;color:${d>0?'var(--green)':'var(--red)'}">${d>0?'+':''}${d.toFixed(1)}%</span>`:'—';
+      const perfH=p.perf?`<span style="font-size:9px;background:var(--bg);border:1px solid var(--border);padding:2px 7px;border-radius:20px;margin-left:6px;font-weight:500;color:var(--text2)">${p.perf}</span>`:'';
+      const crH=p.cr>0?`<div style="font-size:8px;color:var(--blue);font-weight:500;margin-top:2px">${Math.round(p.cr*100)}%</div>`:'';
+      rows+=`<tr><td>${p.label}${perfH}</td><td class="td-r">${dual(p.sal)}${crH}</td><td class="td-r">${dual(p.pB)}</td><td class="td-r">${dual(p.pBen)}</td><td class="td-r" style="font-weight:600">${dual(p.tot)}</td><td class="td-r">${dH}</td></tr>`;
+    });
+    rows+=`<tr style="background:var(--purple-lt)"><td style="color:var(--purple);font-weight:600">Mediana (Pares)</td><td class="td-r">${dual(mSal)}</td><td class="td-r">${dual(mB)}</td><td class="td-r">${dual(mBen)}</td><td class="td-r" style="font-weight:600">${dual(mT)}</td><td class="td-r">—</td></tr>`;
+    rows+=`<tr style="background:var(--green-lt)"><td style="color:var(--green);font-weight:600">Proposta · ${nB}</td><td class="td-r">${dual(dB.sal)}<div style="font-size:8px;color:var(--blue);font-weight:500;margin-top:2px">${dB.cr>0?Math.round(dB.cr*100)+'%':'—'}</div></td><td class="td-r">${dual(dB.pB)}</td><td class="td-r">${dual(dB.pBen)}</td><td class="td-r" style="font-weight:600">${dual(dB.tot)}</td><td class="td-r">—</td></tr>`;
+    document.getElementById('eqTbody').innerHTML=rows;
+  }else if(document.getElementById('eqTbody')){
+    document.getElementById('eqTbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Insira os salários dos pares na barra lateral.</td></tr>';
+  }
 
-            let html = '';
-            const buildRow = (labelHTML, salary, bonus, ben, total, isMedian = false, isProp = false, cr = null) => {
-                let deltaHtml = '-';
-                if(!isProp && dB.totalCost > 0 && total > 0) {
-                    const delta = (dB.totalCost / total) - 1;
-                    const color = delta > 0 ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50';
-                    const sign = delta > 0 ? '+' : '';
-                    deltaHtml = `<span class="${color} font-bold px-2 py-1 rounded-md inline-block">${sign}${(delta*100).toFixed(1)}%</span>`;
-                }
+  renderAss(dA,dB,nA,nB);
+  renderDetail(dA,dB,nA,nB);
+  updateChart(dA,dB,nA,nB);
+  buildInsight(vm,dA,dB,peers);
+}
 
-                const bgClass = isProp ? 'bg-emerald-50/80 font-bold border-y border-emerald-200 shadow-sm' : (isMedian ? 'bg-purple-50/80 font-bold border-y border-purple-200' : 'hover:bg-slate-50 transition-colors');
+function renderAss(dA,dB,nA,nB){
+  const vm=document.getElementById('viewMode').value;
+  let h=`<div class="ass-block"><div class="ass-tag a">${nA}</div><div class="ass-vals"><div class="av-item"><label>Salário Base</label><div class="av">${dA.sal>0?brl(dA.sal):'—'}</div></div><div class="av-item"><label>Bônus Target</label><div class="av">${dA.bm||0}× ${dA.bv>0?brl(dA.bv):''}</div></div></div></div>`;
+  if(dB&&(vm==='2'||vm==='3'))h+=`<div class="ass-block"><div class="ass-tag b">${nB}</div><div class="ass-vals"><div class="av-item"><label>Salário Base</label><div class="av">${dB.sal>0?brl(dB.sal):'—'}</div></div><div class="av-item"><label>Bônus Target</label><div class="av">${dB.bm||0}× ${dB.bv>0?brl(dB.bv):''}</div></div></div></div>`;
+  document.getElementById('assStrip').innerHTML=h;
+}
 
-                let salaryDisplay = fmtDualInline(salary);
-                if (cr !== null && cr > 0) {
-                     salaryDisplay += `<div class="text-[9.5px] text-indigo-500 font-bold mt-1 tracking-wide">CR: ${(cr*100).toFixed(0)}%</div>`;
-                }
+function renderDetail(dA,dB,nA,nB){
+  const vm=document.getElementById('viewMode').value;
+  const ic=vm==='2'||vm==='3';
+  let hh=`<tr><th>Componente</th>`;
+  if(ic)hh+=`<th class="r">${nA} (${months}m)</th><th class="r">${nB} (${months}m)</th><th class="r">Delta</th>`;
+  else hh+=`<th class="r">Projeção (${months}m)</th>`;
+  hh+='</tr>';
+  document.getElementById('dtHead').innerHTML=hh;
+  const rows=[['Salário Base',dA.pS,dB?.pS],['13º Salário',dA.p1,dB?.p1],['Férias (1/3 constitucional)',dA.pV,dB?.pV],['Bônus Target',dA.pB,dB?.pB],['Benefícios (VR + VA)',dA.pBen,dB?.pBen]];
+  let tb='';
+  rows.forEach(([l,va,vb])=>{
+    tb+=`<tr><td>${l}</td>`;
+    if(ic){const d=(vb||0)-(va||0);tb+=`<td class="td-r">${dual(va)}</td><td class="td-r">${dual(vb)}</td><td class="td-r ${d>0?'d-pos':'d-neg'}">${dual(d)}</td>`;}
+    else tb+=`<td class="td-r">${dual(va)}</td>`;
+    tb+='</tr>';
+  });
+  tb+=`<tr class="sub-row"><td>Subtotal (Colaborador)</td>`;
+  if(ic){const d=(dB?.sub||0)-dA.sub;tb+=`<td class="td-r">${dual(dA.sub)}</td><td class="td-r">${dual(dB?.sub)}</td><td class="td-r ${d>0?'d-pos':'d-neg'}">${dual(d)}</td>`;}
+  else tb+=`<td class="td-r">${dual(dA.sub)}</td>`;
+  tb+='</tr>';
+  tb+=`<tr><td>Encargos Patronais <span style="font-size:9px;color:var(--text3)">(incide sobre sal., 13º, férias e ben.)</span></td>`;
+  if(ic){const d=(dB?.pC||0)-dA.pC;tb+=`<td class="td-r">${dual(dA.pC)}</td><td class="td-r">${dual(dB?.pC)}</td><td class="td-r ${d>0?'d-pos':'d-neg'}">${dual(d)}</td>`;}
+  else tb+=`<td class="td-r">${dual(dA.pC)}</td>`;
+  tb+='</tr>';
+  tb+=`<tr class="tot-row"><td>Custo Total (Empresa)</td>`;
+  if(ic){const d=(dB?.tot||0)-dA.tot;tb+=`<td class="td-r">${dual(dA.tot)}</td><td class="td-r">${dual(dB?.tot)}</td><td class="td-r" style="color:var(--amber)">${dual(d)}</td>`;}
+  else tb+=`<td class="td-r">${dual(dA.tot)}</td>`;
+  tb+='</tr>';
+  document.getElementById('dtBody').innerHTML=tb;
+}
 
-                return `
-                <tr class="${bgClass}">
-                    <td class="p-4 border-b border-slate-100">${labelHTML}</td>
-                    <td class="p-4 border-b border-slate-100 text-right">${salaryDisplay}</td>
-                    <td class="p-4 border-b border-slate-100 text-right text-slate-500">${fmtDualInline(bonus)}</td>
-                    <td class="p-4 border-b border-slate-100 text-right text-slate-500">${fmtDualInline(ben)}</td>
-                    <td class="p-4 border-b border-slate-100 text-right font-bold text-indigo-900">${fmtDualInline(total)}</td>
-                    <td class="p-4 border-b border-slate-100 text-right">${isProp ? '-' : deltaHtml}</td>
-                </tr>`;
-            };
+function updateChart(dA,dB,nA,nB){
+  if(!chart)return;
+  const vm=document.getElementById('viewMode').value;
+  const ds=[{label:nA,data:[dA.pS+dA.p1+dA.pV,dA.pB,dA.pC,dA.pBen],backgroundColor:'#0071E3',borderRadius:3,stack:'A'}];
+  if((vm==='2'||vm==='3')&&dB)ds.push({label:nB,data:[dB.pS+dB.p1+dB.pV,dB.pB,dB.pC,dB.pBen],backgroundColor:'#34C759',borderRadius:3,stack:'B'});
+  chart.data.labels=['Salário / Fixo','Bônus','Encargos','Benefícios'];
+  chart.data.datasets=ds;chart.update();
+}
 
-            // Calculate Median of peers
-            let medSalary = 0, medBonus = 0, medBen = 0, medTotal = 0;
-            const mid = Math.floor(state.peersData.length / 2);
-            if(state.peersData.length % 2 !== 0) {
-                medSalary = state.peersData[mid].salary;
-                medBonus = state.peersData[mid].projBonus;
-                medBen = state.peersData[mid].projBen;
-                medTotal = state.peersData[mid].totalCost;
-            } else {
-                medSalary = (state.peersData[mid-1].salary + state.peersData[mid].salary) / 2;
-                medBonus = (state.peersData[mid-1].projBonus + state.peersData[mid].projBonus) / 2;
-                medBen = (state.peersData[mid-1].projBen + state.peersData[mid].projBen) / 2;
-                medTotal = (state.peersData[mid-1].totalCost + state.peersData[mid].totalCost) / 2;
-            }
+function changeView(){
+  const vm=document.getElementById('viewMode').value;
+  vm==='1'?show('v1'):hide('v1');
+  (vm==='2'||vm==='3')?show('v23'):hide('v23');
+  (vm==='2'||vm==='3')?show('scenB'):hide('scenB');
+  vm==='3'?show('peersSection'):hide('peersSection');
+  vm==='3'?show('v3eq'):hide('v3eq');
+  recalc();save();
+}
 
-            state.peersData.forEach(p => {
-                const labelHtml = p.perf !== '' ? `${p.label} <span class="ml-1.5 bg-purple-100/80 border border-purple-200 text-purple-700 px-1.5 py-0.5 rounded text-[9px] font-bold">Nota: ${p.perf}</span>` : p.label;
-                html += buildRow(labelHtml, p.salary, p.projBonus, p.projBen, p.totalCost, false, false, p.cr);
-            });
+function openAdv(){document.getElementById('advPanel').classList.add('open');}
+function closeAdv(){document.getElementById('advPanel').classList.remove('open');recalc();save();}
+function openGloss(){document.getElementById('glossModal').classList.add('open');}
+function closeGloss(){document.getElementById('glossModal').classList.remove('open');}
 
-            html += buildRow('<span class="text-purple-700 flex items-center gap-1.5"><i class="fa-solid fa-bullseye"></i> Mediana (Pares)</span>', medSalary, medBonus, medBen, medTotal, true, false, null);
-            html += buildRow('<span class="text-emerald-700 flex items-center gap-1.5"><i class="fa-solid fa-check-double"></i> Proposta B</span>', dB.salary, dB.projBonus, dB.projBen, dB.totalCost, false, true, dB.compaRatio);
-
-            tbody.innerHTML = html;
-        }
-
-        function renderTable() {
-            const tHead = document.querySelector('#costTable thead');
-            const tBody = document.querySelector('#costTable tbody');
-            const dA = state.dataA; const dB = state.dataB;
-            const isComp = state.viewMode === '2' || state.viewMode === '3';
-            
-            // Generate Headers
-            let headerHTML = `<tr class="tr-header-section"><th class="px-8 py-4 border-b border-slate-200 w-1/3 text-[11px]">Item / Composição</th>`;
-            if (isComp) {
-                headerHTML += `
-                    <th class="px-5 py-4 border-b border-slate-200 text-right text-indigo-700 font-extrabold border-r border-slate-200 text-[11px]">Cenário A<br><span class="text-[9px] font-medium text-slate-500 mt-1 block">Proj. ${state.months}m</span></th>
-                    <th class="px-5 py-4 border-b border-slate-200 text-right text-emerald-700 font-extrabold border-r border-slate-200 text-[11px]">Cenário B<br><span class="text-[9px] font-medium text-slate-500 mt-1 block">Proj. ${state.months}m</span></th>
-                    <th class="px-5 py-4 border-b border-slate-200 text-right text-slate-500 font-extrabold text-[11px]">Impacto (Delta)</th>
-                `;
-            } else {
-                headerHTML += `<th class="px-5 py-4 border-b border-slate-200 text-right text-indigo-700 font-extrabold text-[11px]">Projeção do Período (${state.months}m)</th>`;
-            }
-            headerHTML += `</tr>`;
-            tHead.innerHTML = headerHTML;
-
-            // Render Rows Logic
-            tBody.innerHTML = '';
-            
-            const addRow = (label, valA, valB, isSubtotal = false, isTotal = false) => {
-                const tr = document.createElement('tr');
-                if (isTotal) tr.className = 'bg-slate-800 text-white font-bold text-sm tracking-wide shadow-sm';
-                else if (isSubtotal) tr.className = 'bg-slate-50 border-t-2 border-slate-200 text-xs font-bold text-slate-800';
-                else tr.className = 'hover:bg-slate-50 transition-colors border-b border-slate-100 text-xs';
-                
-                let html = `<td class="px-8 py-3.5">${label}</td>`;
-                
-                if(isComp) {
-                    const delta = valB - valA;
-                    const deltaColor = isTotal ? 'text-amber-400' : (delta > 0 ? 'text-amber-600' : 'text-slate-400');
-                    const textAClass = isTotal ? 'text-indigo-100' : 'text-indigo-800 font-semibold';
-                    const textBClass = isTotal ? 'text-emerald-100' : 'text-emerald-800 font-semibold';
-
-                    html += `
-                        <td class="px-5 py-3.5 text-right ${textAClass} border-r border-slate-100">${fmtDualInline(valA)}</td>
-                        <td class="px-5 py-3.5 text-right ${textBClass} border-r border-slate-100">${fmtDualInline(valB)}</td>
-                        <td class="px-5 py-3.5 text-right ${deltaColor} font-bold bg-slate-50/50">${fmtDualInline(delta)}</td>
-                    `;
-                } else {
-                    const textAClass = isTotal ? 'text-white' : 'text-indigo-900 font-bold';
-                    html += `<td class="px-5 py-3.5 text-right ${textAClass}">${fmtDualInline(valA)}</td>`;
-                }
-                tr.innerHTML = html; tBody.appendChild(tr);
-            };
-
-            const encargosLbl = `Encargos Sociais/Trabalhistas<br><span class="text-[9px] text-slate-400 font-normal">Fator aplicado sobre Salário, 13º, Férias e Benefícios</span>`;
-
-            addRow('Salário Base', dA.projSalary, dB.projSalary);
-            addRow('13º Salário', dA.proj13, dB.proj13);
-            addRow('Férias (1/3)', dA.projVacPlus, dB.projVacPlus);
-            addRow('Bônus Target', dA.projBonus, dB.projBonus);
-            addRow('Benefícios (VR e VA)', dA.projBen, dB.projBen);
-            
-            addRow('SUBTOTAL (Colaborador)', dA.subtotalPackage, dB.subtotalPackage, true, false);
-            
-            addRow(encargosLbl, dA.projCharges, dB.projCharges);
-            
-            addRow('<i class="fa-solid fa-sack-dollar text-emerald-400 mr-2 text-base"></i> CUSTO TOTAL (EMPRESA)', dA.totalCost, dB.totalCost, false, true);
-        }
-
-        function toggleAdvanced() {
-            const p = document.getElementById('advancedPanel');
-            p.classList.toggle('hidden');
-        }
-
-        function resetData() {
-            localStorage.removeItem('vini_comp_calc_v26');
-            location.reload(); 
-        }
-
-        function updateCharts() {
-            if(!mainChart) return;
-            const dA = state.dataA; const dB = state.dataB;
-            const dataA = [dA.projSalary+dA.proj13+dA.projVacPlus, dA.projBonus, dA.projCharges, dA.projBen];
-            const ds = [{ label: 'Cenário A', data: dataA, backgroundColor: '#6366f1', borderRadius: 4, stack: 'A' }];
-            
-            if(state.viewMode === '2' || state.viewMode === '3') {
-                const dataB = [dB.projSalary+dB.proj13+dB.projVacPlus, dB.projBonus, dB.projCharges, dB.projBen];
-                ds.push({ label: 'Cenário B', data: dataB, backgroundColor: '#10b981', borderRadius: 4, stack: 'B' });
-            }
-            
-            mainChart.data.labels = ['Salário/Fixo', 'Bônus/Var', 'Encargos', 'Benefícios'];
-            mainChart.data.datasets = ds;
-            mainChart.update();
-        }
-
-        function exportTableToExcel() {
-            const cards = document.getElementById("assumptionsCards")?.outerHTML || '';
-            const table = document.getElementById("costTable").outerHTML;
-            const footer = `<div style="margin-top: 20px; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 5px;">Desenvolvido por Vinicius Carlos</div>`;
-            
-            const combinedHTML = `
-                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-                <head><meta charset="UTF-8"></head>
-                <body>
-                    <h3>Cenário Base (Premissas)</h3>
-                    ${cards}
-                    <br/>
-                    <h3>Detalhamento Financeiro</h3>
-                    ${table}
-                    <br/>
-                    ${footer}
-                </body>
-                </html>
-            `;
-            let a = document.createElement("a");
-            document.body.appendChild(a);
-            const blob = new Blob([combinedHTML], {type: "application/vnd.ms-excel"});
-            const url = URL.createObjectURL(blob);
-            a.href = url;
-            a.download = `HR_Tools_Total_Comp_v26.xls`;
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    </script>
+function save(){
+  const d={};document.querySelectorAll('input,select').forEach(e=>{if(e.id)d[e.id]=e.value;});
+  localStorage.setItem('vini_comp_v5',JSON.stringify(d));
+  const ind=document.getElementById('saveInd');
+  ind.style.opacity='1';setTimeout(()=>ind.style.opacity='0',1400);
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem('vini_comp_v5');if(!raw)return;
+    const d=JSON.parse(raw);
+    Object.keys(d).forEach(k=>{const e=document.getElementById(k);if(e)e.value=d[k];});
+    months=+(document.getElementById('projMonths')?.value)||12;
+    document.getElementById('projBadge').textContent=months+'m';
+    changeView();
+  }catch(e){console.warn(e);}
+}
+function resetAll(){localStorage.removeItem('vini_comp_v5');location.reload();}
+function exportXls(){
+  const h=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body><h3>Premissas</h3>${document.getElementById('assStrip').outerHTML}<br><h3>Detalhamento</h3>${document.getElementById('dtBody').closest('table').outerHTML}<br><p style="font-size:10px;color:#999">Desenvolvido por Vinicius Carlos</p></body></html>`;
+  const a=document.createElement('a');document.body.appendChild(a);
+  a.href=URL.createObjectURL(new Blob([h],{type:'application/vnd.ms-excel'}));
+  a.download='TotalComp.xls';a.click();document.body.removeChild(a);
+}
+</script>
 </body>
 </html>
